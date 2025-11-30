@@ -12,6 +12,7 @@ namespace PatientsAcounting
         {
             ApplicationConfiguration.Initialize();
 
+            
             try
             {
                 // вызов подключения к бд + проверка успешного соединения
