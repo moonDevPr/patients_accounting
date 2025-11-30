@@ -1,9 +1,9 @@
-using System;
-using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using PatientsAccounting.Forms;
 using PatientsAccounting.Models;
 
-namespace PatientAccounting
+namespace PatientsAcounting
 {
     internal static class Program
     {
@@ -14,16 +14,23 @@ namespace PatientAccounting
 
             try
             {
+                // РІС‹Р·РѕРІ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє Р±Рґ + РїСЂРѕРІРµСЂРєР° СѓСЃРїРµС€РЅРѕРіРѕ СЃРѕРµРґРёРЅРµРЅРёСЏ
                 using var context = new ApplicationDbContext();
                 context.Database.EnsureCreated();
 
-                MessageBox.Show("Если открылось окно - подключение активно и БД была создана");
+                if (context.Database.CanConnect())
+                {
+                    MessageBox.Show("Р‘Р” РїРѕРґРєР»СЋС‡РµРЅР° СѓСЃРїРµС€РЅРѕ");
+                }
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка БД: {ex.Message}", "Ошибка");
+                MessageBox.Show($"Р’РѕР·РЅРёРєР»Р° РѕС€РёР±РєР°: {ex.Message}");
             }
 
+            ApplicationConfiguration.Initialize();
+            Application.Run(new PatientsMenu());
         }
     }
 }

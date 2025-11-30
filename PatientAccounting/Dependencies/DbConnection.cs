@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PatientsAccounting.Models;
+using System.IO;
 
 namespace PatientsAccounting.Models
 {
@@ -11,28 +12,21 @@ namespace PatientsAccounting.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
-                if (File.Exists(envPath))
-                {
-                    DotNetEnv.Env.Load(envPath);
-                    Console.WriteLine($"✅ .env загружен из: {envPath}");
-                }
-                else
-                {
-                    Console.WriteLine($"❌ .env не найден по пути: {envPath}");
-                    Console.WriteLine("Текущая директория: " + Directory.GetCurrentDirectory());
-                }
+                // файл проекта копирует env в директорию appdomain, поэтому env будет работать
+                var envPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".env");
+                DotNetEnv.Env.Load(envPath);
 
-                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "localhost");
-                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "5432");
-                var dbName = DotNetEnv.Env.GetString("DB_NAME", "postgres");
-                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "postgres");
-                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "12345678");
-
+                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "dbHost");
+                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "port");
+                var dbName = DotNetEnv.Env.GetString("DB_NAME", "dbname");
+                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "username");
+                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "password");
 
                 var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUsername};Password={dbPassword}";
 
                 optionsBuilder.UseNpgsql(connectionString);
+
+                
             }
         }
 
@@ -151,7 +145,7 @@ namespace PatientsAccounting.Models
             // таблица учетных данных пользователей
             modelBuilder.Entity<UsersCredentials>(entity =>
             {
-                entity.HasIndex(credential => credential.username);
+                entity.HasIndex(credential => credential.username).IsUnique();
                 entity.HasIndex(credential => credential.password_hash);
                 entity.HasIndex(credential => credential.salt);
                 entity.HasIndex(credential => credential.active);

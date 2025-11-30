@@ -18,7 +18,9 @@ namespace PatientsAccounting.Models
         [MaxLength(50)]
         public string patronymic { get; set; } = string.Empty;
 
-        public int snils { get; set; }
+        [Required]
+        [MaxLength(11)]
+        public string snils { get; set; } = string.Empty;
 
     }
 }
