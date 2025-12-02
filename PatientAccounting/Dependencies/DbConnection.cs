@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PatientsAccounting.Models;
+using PatientsAcounting.Models;
 using System.IO;
 
 namespace PatientsAccounting.Models
@@ -12,7 +13,6 @@ namespace PatientsAccounting.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // файл проекта копирует env в директорию appdomain, поэтому env будет работать
                 var envPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".env");
                 DotNetEnv.Env.Load(envPath);
 
@@ -48,6 +48,12 @@ namespace PatientsAccounting.Models
         public DbSet<VisitDiagnoses> VisitDiagnoses { get; set; }
         public DbSet<DoctorsHospitals> DoctorsHospitals { get; set; }
 
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<DepartmentPosition> DepartmentPositions { get; set; }
+
+        public DbSet<DoctorPosition> DoctorPositions { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // настройка названий таблиц
@@ -67,6 +73,10 @@ namespace PatientsAccounting.Models
             modelBuilder.Entity<PatientVisits>().ToTable("patient_visits");
             modelBuilder.Entity<VisitDiagnoses>().ToTable("visit_diagnoses");
             modelBuilder.Entity<DoctorsHospitals>().ToTable("doctors_hospitals");
+            modelBuilder.Entity<Department>().ToTable("department");
+            modelBuilder.Entity<DoctorPosition>().ToTable("doctor_position");
+            modelBuilder.Entity<Positions>().ToTable("positions");
+            modelBuilder.Entity<DepartmentPosition>().ToTable("department_position");
 
             // настройка индексов, атрибутов и связей
 
@@ -262,6 +272,51 @@ namespace PatientsAccounting.Models
                     .HasForeignKey(dh => dh.id_hospital)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+            // таблица расписания врача - под вопросом (дублирование же)    
+
+            // таблица отделений
+            modelBuilder.Entity<Department>(entity =>
+            {
+                entity.HasIndex(department => department.title);
+            }
+            );
+
+
+            // таблица должностей
+            modelBuilder.Entity<Positions>(entity =>
+            {
+                entity.HasIndex(position => position.title);
+            });
+
+
+            // таблица доктор - должность
+            modelBuilder.Entity<DoctorPosition>(entity =>
+            {
+                entity.HasOne<Doctors>()
+                .WithMany()
+                .HasForeignKey(d => d.id_doctor)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Positions>()
+                .WithMany()
+                .HasForeignKey(p => p.id_position)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // таблица отдел - должность и доктор
+            modelBuilder.Entity<DepartmentPosition>(entity =>
+            {
+                entity.HasOne<Department>()
+                    .WithMany()
+                    .HasForeignKey(d => d.id_department)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne<DoctorPosition>()
+                    .WithMany()
+                    .HasForeignKey(p => p.id_position_doctor)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
         }
     }
 }
