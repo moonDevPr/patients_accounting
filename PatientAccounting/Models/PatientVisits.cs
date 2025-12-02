@@ -18,6 +18,9 @@ namespace PatientsAccounting.Models
         public DateTime adding_date { get; set; }
 
         [Required]
+        public DateTime appointment_date { get; set; }
+
+        [Required]
         public int id_doctor_hospitals { get; set; }
 
         [Required]
