@@ -12,6 +12,8 @@ namespace PatientsAcounting.Services
         public static string Username { get; set; }
         public static int RoleId { get; set; }
         public static int? PatientId { get; set; }
+        public static string RoleName { get; set; }
+
         public static bool IsAuthenticated => UserId > 0;
 
         public static void Clear()
