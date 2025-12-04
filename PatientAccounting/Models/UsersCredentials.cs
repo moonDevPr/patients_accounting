@@ -29,9 +29,5 @@ namespace PatientsAccounting.Models
 
         [Required]
         public int? id_users_role { get; set; }
-
-        public int? id_patient { get; set; }
-
-        public int? id_doctor { get; set; }
     }
 }

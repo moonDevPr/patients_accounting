@@ -56,14 +56,13 @@ namespace PatientsAccounting.Forms
                     {
                         CurrentUser.RoleId = authUser.id_users_role.Value;
                     }
-                    CurrentUser.PatientId = authUser.id_patient;
-
-                    var currentPatient = Patient.GetAllInformation((int)CurrentUser.PatientId);
+                    var currentPatient = Patient.GetPatientByUsername(username);
 
 
                     if (currentPatient != null)
                     {
                         var (patient, credentials, role) = currentPatient.Value;
+                        CurrentUser.PatientId = patient.id;
                         MessageBox.Show($"Добро пожаловать, {patient.surname} {patient.name} {patient.patronymic}!");
 
                         CurrentUser.RoleName = role.role_name;

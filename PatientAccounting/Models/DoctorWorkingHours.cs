@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PatientsAccounting.Models
+namespace PatientsAcounting.Models
 {
-    public class DoctorSchedle
+    internal class DoctorWorkingHours
     {
         public int id { get; set; }
 
@@ -20,9 +24,6 @@ namespace PatientsAccounting.Models
         public DateTime? end_time { get; set; }
 
         [Required]
-        public int? id_hospital { get; set; }
-
-        [Required]
-        public int? id_doctor { get; set; }
+        public int? id_department_position { get; set; }
     }
 }
