@@ -452,16 +452,7 @@ namespace PatientsAccounting.Forms
         private System.Windows.Forms.Timer passwordTimer;
         private Guna2ShadowForm guna2ShadowForm1;
         private Label subtitleLabel;
-
-        // Обработчики событий для перемещения формы
-        private void HeaderPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                NativeMethods.ReleaseCapture();
-                NativeMethods.SendMessage(Handle, 0xA1, 0x2, 0);
-            }
-        }
+        
         private Guna2HtmlLabel guna2HtmlLabel1;
         private Guna2Button backButton;
         private CheckBox CapctchaCheckBox;
