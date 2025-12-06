@@ -15,6 +15,6 @@ namespace PatientsAcounting.Models
         public int id_position_doctor { get; set; }
 
         [Required]
-        public int id_department { get; set; }
+        public int id_hospital_department { get; set; }
     }
 }

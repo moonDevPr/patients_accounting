@@ -16,8 +16,8 @@ namespace PatientsAcounting.Services
             {
                 var query = context.Patients
                     .Join(context.UsersCredentials,
-                        patient => patient.id,
-                        credential => credential.id_patient,
+                        patient => patient.id_user_credential,
+                        credential => credential.id,
                         (patient, credential) => new { Patient = patient, Credential = credential })
                     .Join(context.UsersRoles,
                         combined => combined.Credential.id_users_role,
@@ -29,6 +29,40 @@ namespace PatientsAcounting.Services
                             Role = role
                         })
                     .Where(elem => elem.Patient.id == patientId)
+                    .Select(elem => new
+                    {
+                        elem.Patient,
+                        elem.Credential,
+                        elem.Role
+                    })
+                    .FirstOrDefault();
+
+                if (query == null)
+                    return null;
+
+                return (query.Patient, query.Credential, query.Role);
+            }
+        }
+
+        public static (Patients Patient, UsersCredentials Credential, UsersRole Role)? GetPatientByUsername(string username)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var query = context.Patients
+                    .Join(context.UsersCredentials,
+                        patient => patient.id_user_credential,
+                        credential => credential.id,
+                        (patient, credential) => new { Patient = patient, Credential = credential })
+                    .Join(context.UsersRoles,
+                        combined => combined.Credential.id_users_role,
+                        role => role.id,
+                        (combined, role) => new
+                        {
+                            combined.Patient,
+                            combined.Credential,
+                            Role = role
+                        })
+                    .Where(elem => elem.Credential.username == username)
                     .Select(elem => new
                     {
                         elem.Patient,

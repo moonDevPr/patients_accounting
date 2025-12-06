@@ -1,32 +1,39 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace PatientsAccounting.Models
 {
-    public class Patients
+    public class PatientVisits
     {
         public int id { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        public string surname { get; set; } = string.Empty;
+        [MaxLength(100)]
+        public string document { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(50)]
-        public string name { get; set; } = string.Empty;
+        public bool completed { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        public string patronymic { get; set; } = string.Empty;
+        public DateTime adding_date { get; set; }
 
-        [MaxLength(11)]
-        public string snils { get; set; } = string.Empty;
+        [Required]
+        public DateTime appointment_date { get; set; }
 
-        public string phone { get; set; } = string.Empty;
+        [Required]
+        public int id_visit_type { get; set; }
 
-        public string town { get; set; } = string.Empty;
-        public string street { get; set; } = string.Empty;
-        public string house { get; set; } = string.Empty;
+        [Required]
+        public int id_analysis { get; set; }
+
+        [Required]
+        public int id_entry_type { get; set; }
+
+        [Required]
+        public int id_doctor_working_hours { get; set; }
 
 
+        [Required]
+        public int id_card { get; set; }
     }
 }

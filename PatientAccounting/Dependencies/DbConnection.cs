@@ -46,7 +46,7 @@ namespace PatientsAccounting.Models
         public DbSet<VisitTypes> VisitTypes { get; set; }
         public DbSet<PatientVisits> PatientVisits { get; set; }
         public DbSet<VisitDiagnoses> VisitDiagnoses { get; set; }
-        public DbSet<DoctorsHospitals> DoctorsHospitals { get; set; }
+        public DbSet<HospitalDepartments> HospitalDepartments { get; set; }
 
         public DbSet<Department> Departments { get; set; }
         public DbSet<DepartmentPosition> DepartmentPositions { get; set; }
@@ -60,24 +60,26 @@ namespace PatientsAccounting.Models
             modelBuilder.Entity<Analysis>().ToTable("analysis");
             modelBuilder.Entity<Blocks>().ToTable("blocks");
             modelBuilder.Entity<Chapters>().ToTable("chapters");
+            modelBuilder.Entity<Department>().ToTable("department");
+            modelBuilder.Entity<DepartmentPosition>().ToTable("department_position");
             modelBuilder.Entity<Diseas>().ToTable("diseas");
             modelBuilder.Entity<DiseasTypes>().ToTable("diseas_types");
-            modelBuilder.Entity<UsersCredentials>().ToTable("users_credentials");
-            modelBuilder.Entity<Patients>().ToTable("patients");
+            modelBuilder.Entity<DoctorPosition>().ToTable("doctor_position");
             modelBuilder.Entity<Doctors>().ToTable("doctors");
+            modelBuilder.Entity<DoctorWorkingHours>().ToTable("doctor_schedule");
+            modelBuilder.Entity<EntryType>().ToTable("entry_types");
+            modelBuilder.Entity<HospitalDepartments>().ToTable("hospital_departments");
             modelBuilder.Entity<Hospitals>().ToTable("hospitals");
             modelBuilder.Entity<PatientCards>().ToTable("patient_cards");
-            modelBuilder.Entity<UsersRole>().ToTable("users_role");
-            modelBuilder.Entity<EntryType>().ToTable("entry_types");
-            modelBuilder.Entity<VisitTypes>().ToTable("visit_types");
+            modelBuilder.Entity<Patients>().ToTable("patients");
             modelBuilder.Entity<PatientVisits>().ToTable("patient_visits");
-            modelBuilder.Entity<VisitDiagnoses>().ToTable("visit_diagnoses");
-            modelBuilder.Entity<DoctorsHospitals>().ToTable("doctors_hospitals");
-            modelBuilder.Entity<Department>().ToTable("department");
-            modelBuilder.Entity<DoctorPosition>().ToTable("doctor_position");
             modelBuilder.Entity<Positions>().ToTable("positions");
-            modelBuilder.Entity<DepartmentPosition>().ToTable("department_position");
-
+            modelBuilder.Entity<UsersCredentials>().ToTable("users_credentials");
+            modelBuilder.Entity<UsersRole>().ToTable("users_role");
+            modelBuilder.Entity<VisitTypes>().ToTable("visit_types");
+            modelBuilder.Entity<VisitDiagnoses>().ToTable("visit_diagnoses");
+            
+           
             // настройка индексов, атрибутов и связей
 
             // таблица анализов пациентов
@@ -98,6 +100,45 @@ namespace PatientsAccounting.Models
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
+            // таблица верхнего уровня классификации МКБ-10 - главы
+            modelBuilder.Entity<Chapters>(entity =>
+            {
+                entity.HasIndex(chapter => chapter.number);
+                entity.HasIndex(chapter => chapter.code_range);
+                entity.HasIndex(chapter => chapter.title);
+            });
+
+            // таблица отделений
+            modelBuilder.Entity<Department>(entity =>
+            {
+                entity.HasIndex(department => department.title);
+            }
+            );
+
+            // таблица отдел и больница - должность и доктор
+            modelBuilder.Entity<DepartmentPosition>(entity =>
+            {
+                entity.HasOne<HospitalDepartments>()
+                    .WithMany()
+                    .HasForeignKey(d => d.id_hospital_department)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne<DoctorPosition>()
+                    .WithMany()
+                    .HasForeignKey(p => p.id_position_doctor)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // таблица болезней
+            modelBuilder.Entity<Diseas>(entity =>
+            {
+                entity.HasIndex(diseas => diseas.code);
+                entity.HasIndex(diseas => diseas.title);
+                entity.HasOne<DiseasTypes>()
+                    .WithMany()
+                    .HasForeignKey(d => d.id_diseas_type)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
             // таблица типов заболеваний
             modelBuilder.Entity<DiseasTypes>(entity =>
             {
@@ -107,6 +148,66 @@ namespace PatientsAccounting.Models
                 .OnDelete(DeleteBehavior.Restrict);
             });
 
+            // таблица доктор - должность
+            modelBuilder.Entity<DoctorPosition>(entity =>
+            {
+                entity.HasOne<Doctors>()
+                .WithMany()
+                .HasForeignKey(d => d.id_doctor)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Positions>()
+                .WithMany()
+                .HasForeignKey(p => p.id_position)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // таблица докторов
+            modelBuilder.Entity<Doctors>(entity =>
+            {
+                entity.HasIndex(doctor => doctor.surname);
+                entity.HasIndex(doctor => doctor.name);
+                entity.HasIndex(doctor => doctor.patronymic);
+
+                entity.HasOne<UsersCredentials>()
+               .WithMany()
+               .HasForeignKey(dt => dt.id_user_credential)
+               .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // расписание врача
+            modelBuilder.Entity<DoctorWorkingHours>(entity =>
+            {
+                entity.HasIndex(schedule => schedule.day_of_week);
+                entity.HasIndex(schedule => schedule.start_time);
+                entity.HasIndex(schedule => schedule.end_time);
+                entity.HasIndex(schedule => schedule.duration_appointment);
+                entity.HasOne<DepartmentPosition>()
+               .WithMany()
+               .HasForeignKey(dt => dt.id_department_position)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            }
+            );
+
+
+            modelBuilder.Entity<EntryType>(entity =>
+            {
+                entity.HasIndex(entryType => entryType.title);
+            });
+
+            // связующая таблица доктор - поликлиника
+            modelBuilder.Entity<HospitalDepartments>(entity =>
+            {
+                entity.HasOne<Hospitals>()
+                    .WithMany()
+                    .HasForeignKey(dh => dh.id_hospital)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne<Department>()
+                    .WithMany()
+                    .HasForeignKey(dh => dh.id_department)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             // таблица поликлиник
             modelBuilder.Entity<Hospitals>(entity =>
@@ -141,93 +242,18 @@ namespace PatientsAccounting.Models
                 entity.HasIndex(patient => patient.name);
                 entity.HasIndex(patient => patient.patronymic);
                 entity.HasIndex(patient => patient.snils);
+
+                entity.HasOne<UsersCredentials>()
+               .WithMany()
+               .HasForeignKey(dt => dt.id_user_credential)
+               .OnDelete(DeleteBehavior.Restrict);
             });
-
-
-            // таблица-справочник ролей пользователей
-            modelBuilder.Entity<UsersRole>(entity =>
-            {
-                entity.HasIndex(role => role.role_name);
-                entity.HasIndex(role => role.description);
-            });
-
-
-            // таблица учетных данных пользователей
-            modelBuilder.Entity<UsersCredentials>(entity =>
-            {
-                entity.HasIndex(credential => credential.username).IsUnique();
-                entity.HasIndex(credential => credential.password_hash);
-                entity.HasIndex(credential => credential.salt);
-                entity.HasIndex(credential => credential.active);
-                entity.HasIndex(credential => credential.created_date);
-                entity.HasIndex(credential => credential.last_login);
-
-                entity.HasOne<UsersRole>()
-                .WithMany()
-                .HasForeignKey(dt => dt.id_users_role)
-                .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne<Patients>()
-                .WithMany()
-                .HasForeignKey(dt => dt.id_patient)
-                .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne<Doctors>()
-                .WithMany()
-                .HasForeignKey(dt => dt.id_doctor)
-                .OnDelete(DeleteBehavior.Restrict);
-            });
-
-
-            // таблица верхнего уровня классификации МКБ-10 - главы
-            modelBuilder.Entity<Chapters>(entity =>
-            {
-                entity.HasIndex(chapter => chapter.number);
-                entity.HasIndex(chapter => chapter.code_range);
-                entity.HasIndex(chapter => chapter.title);
-            });
-
-
-            // таблица болезней
-            modelBuilder.Entity<Diseas>(entity =>
-            {
-                entity.HasIndex(diseas => diseas.code);
-                entity.HasIndex(diseas => diseas.title);
-                entity.HasOne<DiseasTypes>()
-                    .WithMany()
-                    .HasForeignKey(d => d.id_diseas_type)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
-
-            // таблица докторов
-            modelBuilder.Entity<Doctors>(entity =>
-            {
-                entity.HasIndex(doctor => doctor.surname);
-                entity.HasIndex(doctor => doctor.name);
-                entity.HasIndex(doctor => doctor.patronymic);
-            });
-
-            modelBuilder.Entity<EntryType>(entity =>
-            {
-                entity.HasIndex(entryType => entryType.title);
-            });
-
-            // таблица типы посещений
-            modelBuilder.Entity<VisitTypes>(entity =>
-            {
-                entity.HasIndex(visitType => visitType.title);
-            });
-
 
             // таблица посещений пациентов
             modelBuilder.Entity<PatientVisits>(entity =>
             {
                 entity.HasIndex(visit => visit.adding_date);
-                entity.HasOne<DoctorsHospitals>()
-                    .WithMany()
-                    .HasForeignKey(pv => pv.id_doctor_hospitals)
-                    .OnDelete(DeleteBehavior.Restrict);
+
                 entity.HasOne<VisitTypes>()
                     .WithMany()
                     .HasForeignKey(pv => pv.id_visit_type)
@@ -244,6 +270,41 @@ namespace PatientsAccounting.Models
                     .WithMany()
                     .HasForeignKey(pv => pv.id_card)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<DoctorWorkingHours>()
+                    .WithMany()
+                    .HasForeignKey(pv => pv.id_doctor_working_hours)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // таблица должностей
+            modelBuilder.Entity<Positions>(entity =>
+            {
+                entity.HasIndex(position => position.title);
+            });
+
+            // таблица учетных данных пользователей
+            modelBuilder.Entity<UsersCredentials>(entity =>
+            {
+                entity.HasIndex(credential => credential.username).IsUnique();
+                entity.HasIndex(credential => credential.password_hash);
+                entity.HasIndex(credential => credential.salt);
+                entity.HasIndex(credential => credential.active);
+                entity.HasIndex(credential => credential.created_date);
+                entity.HasIndex(credential => credential.last_login);
+
+                entity.HasOne<UsersRole>()
+                .WithMany()
+                .HasForeignKey(dt => dt.id_users_role)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+            // таблица-справочник ролей пользователей
+            modelBuilder.Entity<UsersRole>(entity =>
+            {
+                entity.HasIndex(role => role.role_name);
+                entity.HasIndex(role => role.description);
             });
 
             // таблица доктор - диагнозы посещений
@@ -259,62 +320,10 @@ namespace PatientsAccounting.Models
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            // связующая таблица доктор - поликлиника
-            modelBuilder.Entity<DoctorsHospitals>(entity =>
+            // таблица типы посещений
+            modelBuilder.Entity<VisitTypes>(entity =>
             {
-                entity.HasIndex(dh => dh.active);
-                entity.HasOne<Doctors>()
-                    .WithMany()
-                    .HasForeignKey(dh => dh.id_doctor)
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne<Hospitals>()
-                    .WithMany()
-                    .HasForeignKey(dh => dh.id_hospital)
-                    .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // таблица расписания врача - под вопросом (дублирование же)    
-
-            // таблица отделений
-            modelBuilder.Entity<Department>(entity =>
-            {
-                entity.HasIndex(department => department.title);
-            }
-            );
-
-
-            // таблица должностей
-            modelBuilder.Entity<Positions>(entity =>
-            {
-                entity.HasIndex(position => position.title);
-            });
-
-
-            // таблица доктор - должность
-            modelBuilder.Entity<DoctorPosition>(entity =>
-            {
-                entity.HasOne<Doctors>()
-                .WithMany()
-                .HasForeignKey(d => d.id_doctor)
-                .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne<Positions>()
-                .WithMany()
-                .HasForeignKey(p => p.id_position)
-                .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // таблица отдел - должность и доктор
-            modelBuilder.Entity<DepartmentPosition>(entity =>
-            {
-                entity.HasOne<Department>()
-                    .WithMany()
-                    .HasForeignKey(d => d.id_department)
-                    .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne<DoctorPosition>()
-                    .WithMany()
-                    .HasForeignKey(p => p.id_position_doctor)
-                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(visitType => visitType.title);
             });
 
         }
