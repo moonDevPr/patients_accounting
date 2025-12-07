@@ -17,6 +17,8 @@ namespace PatientsAccounting.Models
         [Required]
         [MaxLength(50)]
         public string patronymic { get; set; } = string.Empty;
-
+        
+        [Required]
+        public int id_user_credential { get; set; }
     }
 }

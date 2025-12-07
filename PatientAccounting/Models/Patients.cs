@@ -28,5 +28,9 @@ namespace PatientsAccounting.Models
         public string house { get; set; } = string.Empty;
 
 
+        [Required]
+        public int id_user_credential { get; set; }
+
+
     }
 }

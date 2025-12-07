@@ -143,9 +143,7 @@ namespace PatientsAccounting.Forms
                 active = true,
                 created_date = DateTime.UtcNow,
                 id_users_role = getRoleId().id,
-                id_patient = PatientId,
                 last_login = null,
-                id_doctor = null,
                 salt = salt
 
             };
@@ -181,12 +179,11 @@ namespace PatientsAccounting.Forms
                 {
                     try
                     {
-                        context.Patients.Add(patient);
+                        context.UsersCredentials.Add(userCredential);
                         context.SaveChanges();
 
-                        userCredential.id_patient = patient.id;
-
-                        context.UsersCredentials.Add(userCredential);
+                        patient.id_user_credential = userCredential.id;
+                        context.Patients.Add(patient);
                         context.SaveChanges();
 
                         transaction.Commit();
