@@ -47,7 +47,7 @@ namespace PatientsAccounting.Forms
                 patientsMenu.Show();
             }
 
-            
+
         }
     }
 }

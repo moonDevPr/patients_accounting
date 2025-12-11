@@ -16,17 +16,15 @@ namespace PatientsAccounting.Models
                 var envPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".env");
                 DotNetEnv.Env.Load(envPath);
 
-                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "dbHost");
-                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "port");
-                var dbName = DotNetEnv.Env.GetString("DB_NAME", "dbname");
-                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "username");
-                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "password");
+                var dbHost = "localhost";
+                var dbPort = "5432";
+                var dbName = "patients_accounting";
+                var dbUsername = "postgres";
+                var dbPassword = "postgres";
 
                 var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUsername};Password={dbPassword}";
 
                 optionsBuilder.UseNpgsql(connectionString);
-
-                
             }
         }
 
@@ -47,16 +45,16 @@ namespace PatientsAccounting.Models
         public DbSet<PatientVisits> PatientVisits { get; set; }
         public DbSet<VisitDiagnoses> VisitDiagnoses { get; set; }
         public DbSet<HospitalDepartments> HospitalDepartments { get; set; }
-
         public DbSet<Department> Departments { get; set; }
-        public DbSet<DepartmentPosition> DepartmentPositions { get; set; }
-
-        public DbSet<DoctorPosition> DoctorPositions { get; set; }
+        internal DbSet<DoctorWorkingHours> DoctorWorkingHours { get; set; }
+        internal DbSet<DepartmentPosition> DepartmentPositions { get; set; }
+        internal DbSet<DoctorPosition> DoctorPositions { get; set; }
+        public DbSet<Positions> Positions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // настройка названий таблиц
+            // Все ToTable прописываем:
             modelBuilder.Entity<Analysis>().ToTable("analysis");
             modelBuilder.Entity<Blocks>().ToTable("blocks");
             modelBuilder.Entity<Chapters>().ToTable("chapters");
@@ -73,13 +71,13 @@ namespace PatientsAccounting.Models
             modelBuilder.Entity<PatientCards>().ToTable("patient_cards");
             modelBuilder.Entity<Patients>().ToTable("patients");
             modelBuilder.Entity<PatientVisits>().ToTable("patient_visits");
-            modelBuilder.Entity<Positions>().ToTable("positions");
+            modelBuilder.Entity<Positions>().ToTable("positions"); 
             modelBuilder.Entity<UsersCredentials>().ToTable("users_credentials");
             modelBuilder.Entity<UsersRole>().ToTable("users_role");
             modelBuilder.Entity<VisitTypes>().ToTable("visit_types");
             modelBuilder.Entity<VisitDiagnoses>().ToTable("visit_diagnoses");
-            
-           
+
+
             // настройка индексов, атрибутов и связей
 
             // таблица анализов пациентов
