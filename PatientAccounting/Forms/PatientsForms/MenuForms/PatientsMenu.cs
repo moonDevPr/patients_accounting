@@ -1,5 +1,7 @@
 ﻿using Guna.UI2.WinForms;
+using PatientAccounting;
 using PatientsAccounting.Models;
+using PatientsAccounting.Forms;
 using PatientsAcounting.Services;
 using System;
 using System.Drawing;
@@ -11,17 +13,34 @@ namespace PatientsAccounting.Forms
     {
         private Form currentChildForm;
 
+
         public PatientsMenu()
         {
             InitializeComponent();
             AuthBtn.Visible = !CurrentUser.IsAuthenticated;
             logoutBtn.Visible = CurrentUser.IsAuthenticated;
+
+
         }
 
         private void OpenChildForm(Form childForm)
         {
+            //if (currentChildForm != null)
+            //{
+            //    currentChildForm.Close();
+            //}
+
+            //currentChildForm = childForm;
+            //childForm.TopLevel = false;
+            //childForm.FormBorderStyle = FormBorderStyle.None;
+            //childForm.Dock = DockStyle.Fill;
+
+            //childForm.BringToFront();
+            //childForm.Show();
+
+            
             if (currentChildForm != null)
-            {
+            { 
                 currentChildForm.Close();
             }
 
@@ -29,9 +48,32 @@ namespace PatientsAccounting.Forms
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
+            childForm.AutoScroll = true; // ← ДОБАВЬ!
+
+            // ВАЖНО: Добавляем форму в panelDesktop
+            if (panelDesktop != null)
+            {
+                // Очищаем panelDesktop и добавляем дочернюю форму
+                panelDesktop.Controls.Clear();
+                panelDesktop.Controls.Add(childForm);
+
+                // Убедимся, что panelDesktop видим и поверх других элементов
+                panelDesktop.Visible = true;
+                panelDesktop.BringToFront();
+            }
+            else
+            {
+                // Если panelDesktop не найден, откроем как отдельное окно
+                MessageBox.Show("Панель panelDesktop не найдена!", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                childForm.TopLevel = true;
+                childForm.Show();
+                return;
+            }
 
             childForm.BringToFront();
             childForm.Show();
+        
         }
 
 
@@ -59,7 +101,10 @@ namespace PatientsAccounting.Forms
 
         private void HistoryBtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Расписание врачей");
+            
+            DoctorScheduleForm scheduleForm = new DoctorScheduleForm();
+            OpenChildForm(scheduleForm);
+        
         }
 
         private void MakeVisitBtn_Click(Object sender, EventArgs e)
@@ -69,7 +114,19 @@ namespace PatientsAccounting.Forms
 
         private void HospitalsBtn_Click(Object sender, EventArgs e)
         {
-            MessageBox.Show("Просмотреть информацию о поликлиниках");
+           
+            // Создаем форму больниц
+            HospitalsForm hospitalsForm = new HospitalsForm();
+
+            // Можно задать размер формы под панель
+            if (panelDesktop != null)
+            {
+                hospitalsForm.Size = panelDesktop.Size;
+            }
+
+            // Открываем форму внутри panelDesktop
+            OpenChildForm(hospitalsForm);
+        
         }
 
         private void LogoutBtn_Click(object sender, EventArgs e)
@@ -95,5 +152,7 @@ namespace PatientsAccounting.Forms
         {
             this.WindowState = FormWindowState.Minimized;
         }
+
+        
     }
 }

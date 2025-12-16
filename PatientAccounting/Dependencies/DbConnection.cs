@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientsAccounting.Models;
 using PatientsAcounting.Models;
 using System.IO;
@@ -16,11 +17,11 @@ namespace PatientsAccounting.Models
                 var envPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".env");
                 DotNetEnv.Env.Load(envPath);
 
-                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "dbHost");
-                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "port");
-                var dbName = DotNetEnv.Env.GetString("DB_NAME", "dbname");
-                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "username");
-                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "password");
+                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "localhost");
+                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "5432");
+                var dbName = DotNetEnv.Env.GetString("DB_NAME", "new");
+                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "postgres");
+                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "Ltyecz2007");
 
                 var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUsername};Password={dbPassword}";
 
@@ -77,11 +78,49 @@ namespace PatientsAccounting.Models
             modelBuilder.Entity<VisitTypes>().ToTable("visit_types");
             modelBuilder.Entity<VisitDiagnoses>().ToTable("visit_diagnoses");
 
+            
+            base.OnModelCreating(modelBuilder);
 
-            // настройка индексов, атрибутов и связей
+            // Для PostgreSQL - конвертируем все DateTime в UTC при сохранении
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime))
+                    {
+                        property.SetValueConverter(
+                            new ValueConverter<DateTime, DateTime>(
+                                v => v.Kind == DateTimeKind.Unspecified
+                                    ? DateTime.SpecifyKind(v, DateTimeKind.Utc)
+                                    : v.ToUniversalTime(),
+                                v => DateTime.SpecifyKind(v, DateTimeKind.Local)
+                            )
+                        );
+                    }
+                    else if (property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(
+                            new ValueConverter<DateTime?, DateTime?>(
+                                v => v.HasValue
+                                    ? (v.Value.Kind == DateTimeKind.Unspecified
+                                        ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc)
+                                        : v.Value.ToUniversalTime())
+                                    : v,
+                                v => v.HasValue
+                                    ? DateTime.SpecifyKind(v.Value, DateTimeKind.Local)
+                                    : v
+                            )
+                        );
+                    }
+                }
+            }
+        
 
-            // таблица анализов пациентов
-            modelBuilder.Entity<Analysis>(entity =>
+
+        // настройка индексов, атрибутов и связей
+
+        // таблица анализов пациентов
+        modelBuilder.Entity<Analysis>(entity =>
             {
                 entity.HasIndex(p => p.type);
             });
@@ -174,19 +213,25 @@ namespace PatientsAccounting.Models
             });
 
             // расписание врача
+            // Найдите конфигурацию DoctorWorkingHours
             modelBuilder.Entity<DoctorWorkingHours>(entity =>
             {
+                entity.ToTable("doctor_schedule");
+
                 entity.HasIndex(schedule => schedule.day_of_week);
                 entity.HasIndex(schedule => schedule.start_time);
                 entity.HasIndex(schedule => schedule.end_time);
                 entity.HasIndex(schedule => schedule.duration_appointment);
-                entity.HasOne<DepartmentPosition>()
-               .WithMany()
-               .HasForeignKey(dt => dt.id_department_position)
-               .OnDelete(DeleteBehavior.Restrict);
 
-            }
-            );
+                // ПРОСТАЯ конфигурация - EF Core сам поймет тип
+                entity.Property(e => e.start_time);
+                entity.Property(e => e.end_time);
+
+                entity.HasOne<DepartmentPosition>()
+                    .WithMany()
+                    .HasForeignKey(dt => dt.id_department_position)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
 
             modelBuilder.Entity<EntryType>(entity =>
