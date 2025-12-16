@@ -17,11 +17,11 @@ namespace PatientsAccounting.Models
                 var envPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".env");
                 DotNetEnv.Env.Load(envPath);
 
-                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "localhost");
-                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "5432");
-                var dbName = DotNetEnv.Env.GetString("DB_NAME", "new");
-                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "postgres");
-                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "Ltyecz2007");
+                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "dbHost");
+                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "port");
+                var dbName = DotNetEnv.Env.GetString("DB_NAME", "dbname");
+                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "username");
+                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "password");
 
                 var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUsername};Password={dbPassword}";
 
@@ -29,9 +29,13 @@ namespace PatientsAccounting.Models
             }
         }
 
+
+
+
+
+
         // задача табли через коллекцию сущностей DbSet
-        public DbSet<Analysis> Analysis { get; set; }
-        public DbSet<Blocks> Blocks { get; set; }
+       
         public DbSet<Chapters> Chapters { get; set; }
         public DbSet<Diseas> Diseas { get; set; }
         public DbSet<DiseasTypes> DiseasTypes { get; set; }
@@ -51,6 +55,8 @@ namespace PatientsAccounting.Models
         internal DbSet<DepartmentPosition> DepartmentPositions { get; set; }
         internal DbSet<DoctorPosition> DoctorPositions { get; set; }
         public DbSet<Positions> Positions { get; set; }
+        public DbSet<Analysis> Analysis { get; set; }
+        public DbSet<Blocks> Blocks { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
