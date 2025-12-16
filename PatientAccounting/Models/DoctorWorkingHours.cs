@@ -21,7 +21,7 @@ namespace PatientsAcounting.Models
         [Required]
         public DateTime start_time { get; set; }
 
-        public DateTime? end_time { get; set; }
+        public DateTime end_time { get; set; }
 
         [Required]
         public int? id_department_position { get; set; }

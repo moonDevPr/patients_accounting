@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientsAccounting.Models;
 using PatientsAcounting.Models;
 using System.IO;
@@ -25,14 +26,16 @@ namespace PatientsAccounting.Models
                 var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUsername};Password={dbPassword}";
 
                 optionsBuilder.UseNpgsql(connectionString);
-
-                
             }
         }
 
+
+
+
+
+
         // задача табли через коллекцию сущностей DbSet
-        public DbSet<Analysis> Analysis { get; set; }
-        public DbSet<Blocks> Blocks { get; set; }
+       
         public DbSet<Chapters> Chapters { get; set; }
         public DbSet<Diseas> Diseas { get; set; }
         public DbSet<DiseasTypes> DiseasTypes { get; set; }
@@ -47,16 +50,18 @@ namespace PatientsAccounting.Models
         public DbSet<PatientVisits> PatientVisits { get; set; }
         public DbSet<VisitDiagnoses> VisitDiagnoses { get; set; }
         public DbSet<HospitalDepartments> HospitalDepartments { get; set; }
-
         public DbSet<Department> Departments { get; set; }
-        public DbSet<DepartmentPosition> DepartmentPositions { get; set; }
-
-        public DbSet<DoctorPosition> DoctorPositions { get; set; }
+        internal DbSet<DoctorWorkingHours> DoctorWorkingHours { get; set; }
+        internal DbSet<DepartmentPosition> DepartmentPositions { get; set; }
+        internal DbSet<DoctorPosition> DoctorPositions { get; set; }
+        public DbSet<Positions> Positions { get; set; }
+        public DbSet<Analysis> Analysis { get; set; }
+        public DbSet<Blocks> Blocks { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // настройка названий таблиц
+            // Все ToTable прописываем:
             modelBuilder.Entity<Analysis>().ToTable("analysis");
             modelBuilder.Entity<Blocks>().ToTable("blocks");
             modelBuilder.Entity<Chapters>().ToTable("chapters");
@@ -73,17 +78,55 @@ namespace PatientsAccounting.Models
             modelBuilder.Entity<PatientCards>().ToTable("patient_cards");
             modelBuilder.Entity<Patients>().ToTable("patients");
             modelBuilder.Entity<PatientVisits>().ToTable("patient_visits");
-            modelBuilder.Entity<Positions>().ToTable("positions");
+            modelBuilder.Entity<Positions>().ToTable("positions"); 
             modelBuilder.Entity<UsersCredentials>().ToTable("users_credentials");
             modelBuilder.Entity<UsersRole>().ToTable("users_role");
             modelBuilder.Entity<VisitTypes>().ToTable("visit_types");
             modelBuilder.Entity<VisitDiagnoses>().ToTable("visit_diagnoses");
-            
-           
-            // настройка индексов, атрибутов и связей
 
-            // таблица анализов пациентов
-            modelBuilder.Entity<Analysis>(entity =>
+            
+            base.OnModelCreating(modelBuilder);
+
+            // Для PostgreSQL - конвертируем все DateTime в UTC при сохранении
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime))
+                    {
+                        property.SetValueConverter(
+                            new ValueConverter<DateTime, DateTime>(
+                                v => v.Kind == DateTimeKind.Unspecified
+                                    ? DateTime.SpecifyKind(v, DateTimeKind.Utc)
+                                    : v.ToUniversalTime(),
+                                v => DateTime.SpecifyKind(v, DateTimeKind.Local)
+                            )
+                        );
+                    }
+                    else if (property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(
+                            new ValueConverter<DateTime?, DateTime?>(
+                                v => v.HasValue
+                                    ? (v.Value.Kind == DateTimeKind.Unspecified
+                                        ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc)
+                                        : v.Value.ToUniversalTime())
+                                    : v,
+                                v => v.HasValue
+                                    ? DateTime.SpecifyKind(v.Value, DateTimeKind.Local)
+                                    : v
+                            )
+                        );
+                    }
+                }
+            }
+        
+
+
+        // настройка индексов, атрибутов и связей
+
+        // таблица анализов пациентов
+        modelBuilder.Entity<Analysis>(entity =>
             {
                 entity.HasIndex(p => p.type);
             });
@@ -176,19 +219,25 @@ namespace PatientsAccounting.Models
             });
 
             // расписание врача
+            // Найдите конфигурацию DoctorWorkingHours
             modelBuilder.Entity<DoctorWorkingHours>(entity =>
             {
+                entity.ToTable("doctor_schedule");
+
                 entity.HasIndex(schedule => schedule.day_of_week);
                 entity.HasIndex(schedule => schedule.start_time);
                 entity.HasIndex(schedule => schedule.end_time);
                 entity.HasIndex(schedule => schedule.duration_appointment);
-                entity.HasOne<DepartmentPosition>()
-               .WithMany()
-               .HasForeignKey(dt => dt.id_department_position)
-               .OnDelete(DeleteBehavior.Restrict);
 
-            }
-            );
+                // ПРОСТАЯ конфигурация - EF Core сам поймет тип
+                entity.Property(e => e.start_time);
+                entity.Property(e => e.end_time);
+
+                entity.HasOne<DepartmentPosition>()
+                    .WithMany()
+                    .HasForeignKey(dt => dt.id_department_position)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
 
             modelBuilder.Entity<EntryType>(entity =>

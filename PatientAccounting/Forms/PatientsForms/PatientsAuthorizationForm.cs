@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace PatientsAccounting.Forms
 {
     public partial class PatientsAuthorizationForm : Form
@@ -56,16 +55,19 @@ namespace PatientsAccounting.Forms
                     {
                         CurrentUser.RoleId = authUser.id_users_role.Value;
                     }
-                    var currentPatient = Patient.GetPatientByUsername(username);
 
+                    // ДОБАВЛЕНО: Проверяем кто под этим логином - пациент или сотрудник
+                    // 1. Сначала пробуем найти пациента
+                    var currentPatient = Patient.GetPatientByUsername(username);
 
                     if (currentPatient != null)
                     {
+                        // Это пациент
                         var (patient, credentials, role) = currentPatient.Value;
                         CurrentUser.PatientId = patient.id;
-                        MessageBox.Show($"Добро пожаловать, {patient.surname} {patient.name} {patient.patronymic}!");
-
                         CurrentUser.RoleName = role.role_name;
+
+                        MessageBox.Show($"Добро пожаловать, {patient.surname} {patient.name} {patient.patronymic}!");
 
                         if (role.role_name == "Пациент")
                         {
@@ -73,16 +75,61 @@ namespace PatientsAccounting.Forms
                             menu.Show();
                             this.Close();
                         }
+                        else
+                        {
+                            MessageBox.Show("Ошибка: у пациента некорректная роль");
+                        }
                     }
                     else
                     {
-                        MessageBox.Show($"Добро пожаловать. У вас не выбран тип аккаунта, поэтому наш сервис не может предоставить вам функционал");
+                        // Не пациент - значит сотрудник (аналитик, врач и т.д.)
+                        // ДОБАВЛЕНО: Получаем роль сотрудника
+                        UsersRole? employeeRole = null;
+                        using (var context = new ApplicationDbContext())
+                        {
+                            if (authUser.id_users_role.HasValue)
+                            {
+                                employeeRole = context.UsersRoles
+                                    .FirstOrDefault(r => r.id == authUser.id_users_role.Value);
+                            }
+                        }
 
+                        if (employeeRole != null)
+                        {
+                            CurrentUser.RoleName = employeeRole.role_name;
+
+                            // ДОБАВЛЕНО: Проверяем роль сотрудника и открываем соответствующую форму
+                            if (employeeRole.role_name == "Аналитик")
+                            {
+                                MessageBox.Show($"Добро пожаловать, аналитик {username}!");
+                                AnalystMenuForm analystMenu = new AnalystMenuForm();
+                                analystMenu.Show();
+                                this.Close();
+                            }
+                            else if (employeeRole.role_name == "Врач")
+                            {
+                                MessageBox.Show($"Добро пожаловать, врач {username}!");
+                                // TODO: Добавить открытие формы врача
+                                MessageBox.Show("Форма для врачей в разработке");
+                            }
+                            else if (employeeRole.role_name == "Главный врач")
+                            {
+                                MessageBox.Show($"Добро пожаловать, администратор {username}!");
+                                // TODO: Добавить административную панель
+                                MessageBox.Show("Административная панель в разработке");
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Добро пожаловать, сотрудник {username}! Роль: {employeeRole.role_name}");
+                                MessageBox.Show("Для вашей роли еще нет специальной формы");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Ошибка: не удалось определить роль сотрудника");
+                        }
                     }
-
-                   
                 }
-
                 else
                 {
                     MessageBox.Show("Неверное имя пользователя или пароль");
@@ -110,11 +157,9 @@ namespace PatientsAccounting.Forms
                     {
                         return user;
                     }
-
                 }
 
                 return null;
-
             }
         }
 
@@ -128,9 +173,5 @@ namespace PatientsAccounting.Forms
                 return Convert.ToBase64String(hash);
             }
         }
-
-
-       
-
     }
 }
