@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PatientsAccounting.Forms
 {
@@ -38,6 +39,16 @@ namespace PatientsAccounting.Forms
                 return;
             }
 
+            //
+            if ((SnilsTextBox.Text.Length < 11) || (SnilsTextBox.Text.Length > 11))
+            {
+                MessageBox.Show("Неверный номер СНИЛСа. Номер должен содержать 11 символов");
+                SnilsTextBox.Focus();
+                SnilsTextBox.SelectAll();
+                return;
+            }
+
+
 
             if (checkUsernameExists(UsernameBox.Text))
             {
@@ -47,9 +58,43 @@ namespace PatientsAccounting.Forms
                 return;
             }
 
+            if (checkSnilsExists(SnilsTextBox.Text) == true)
+            {
+                MessageBox.Show("Пользователь с таким номером СНИЛС уже существует");
+                SnilsTextBox.Focus();
+                SnilsTextBox.SelectAll();
+                return;
+            }
+
+            if (!UsernameBox.Text.All(char.IsLetter))
+            {
+                MessageBox.Show("Фамилия пользователя не может содержать числовые значения");
+                UsernameBox.Focus();
+                UsernameBox.SelectAll();
+                return;
+            }
+
+            if (!NameBox.Text.All(char.IsLetter))
+            {
+                MessageBox.Show("Имя не может содержать числовые значения");
+                NameBox.Focus();
+                NameBox.SelectAll();
+                return;
+            }
+
+            if ((!string.IsNullOrWhiteSpace(PatronymicBox.Text)) && (!PatronymicBox.Text.All(char.IsLetter)))
+            {
+                MessageBox.Show("Отчество не может содержать числовые значения");
+                NameBox.Focus();
+                NameBox.SelectAll();
+                return;
+            }
+
             var patient = CreatePatientRecord();
 
             var userCredential = CreateUserCredentials(patient.id);
+
+            //var patientCard = CreatePatientCard(patient.id);
 
             SaveToDatabase(patient, userCredential);
 
@@ -68,7 +113,8 @@ namespace PatientsAccounting.Forms
             if (string.IsNullOrEmpty(SurnameBox.Text) ||
                 string.IsNullOrEmpty(NameBox.Text) ||
                 string.IsNullOrWhiteSpace(UsernameBox.Text) ||
-                string.IsNullOrWhiteSpace(PasswordBox.Text))
+                string.IsNullOrWhiteSpace(PasswordBox.Text) ||
+                string.IsNullOrWhiteSpace(SnilsTextBox.Text))
             {
                 MessageBox.Show("Проверьте заполнение обязательных полей");
                 return false;
@@ -116,7 +162,7 @@ namespace PatientsAccounting.Forms
                 surname = SurnameBox.Text,
                 name = NameBox.Text,
                 patronymic = PatronymicBox.Text,
-                snils = "000"
+                snils = SnilsTextBox.Text
             };
         }
 
@@ -186,6 +232,17 @@ namespace PatientsAccounting.Forms
                         context.Patients.Add(patient);
                         context.SaveChanges();
 
+
+                        var patientCard = new PatientCards
+                        {
+                            id_patient = patient.id,
+                            code = patient.id + 10,
+                        };
+
+                        context.PatientCards.Add(patientCard);
+                        context.SaveChanges();
+
+
                         transaction.Commit();
                     }
                     catch
@@ -194,6 +251,21 @@ namespace PatientsAccounting.Forms
                         throw;
                     }
                 }
+            }
+        }
+
+        private bool checkSnilsExists(string inputSnils)
+        {
+            Patients? snils = null;
+            using (var context = new ApplicationDbContext())
+            {
+                snils = context.Patients
+                    .FirstOrDefault(elem => elem.snils == inputSnils);
+                if (snils != null)
+                {
+                    return true;
+                }
+                return false;
             }
         }
 
