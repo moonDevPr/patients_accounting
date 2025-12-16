@@ -54,15 +54,12 @@ namespace PatientsAccounting.Forms
             profileBtn = new Guna2Button();
             dashboardBtn = new Guna2Button();
             contentPanel = new Guna2Panel();
+            panelDesktop = new Panel();
             AuthBtn = new Guna2Button();
             guna2HtmlLabel1 = new Guna2HtmlLabel();
             leftMenuPanel.SuspendLayout();
             contentPanel.SuspendLayout();
             SuspendLayout();
-
-            AuthBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            guna2HtmlLabel1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-
             // 
             // leftMenuPanel
             // 
@@ -108,7 +105,7 @@ namespace PatientsAccounting.Forms
             HospitalsBtn.Text = "Поликлиники";
             HospitalsBtn.TextAlign = HorizontalAlignment.Left;
             HospitalsBtn.TextOffset = new Point(20, 0);
-            HospitalsBtn.Click += this.HospitalsBtn_Click;
+            HospitalsBtn.Click += HospitalsBtn_Click;
             // 
             // MakeVisitBtn
             // 
@@ -281,6 +278,7 @@ namespace PatientsAccounting.Forms
             // contentPanel
             // 
             contentPanel.BackColor = Color.FromArgb(45, 45, 45);
+            contentPanel.Controls.Add(panelDesktop);
             contentPanel.Controls.Add(AuthBtn);
             contentPanel.Controls.Add(guna2HtmlLabel1);
             contentPanel.CustomizableEdges = customizableEdges19;
@@ -291,8 +289,16 @@ namespace PatientsAccounting.Forms
             contentPanel.Size = new Size(950, 750);
             contentPanel.TabIndex = 2;
             // 
+            // panelDesktop
+            // 
+            panelDesktop.Location = new Point(28, 99);
+            panelDesktop.Name = "panelDesktop";
+            panelDesktop.Size = new Size(900, 628);
+            panelDesktop.TabIndex = 0;
+            // 
             // AuthBtn
             // 
+            AuthBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             AuthBtn.CustomizableEdges = customizableEdges17;
             AuthBtn.DisabledState.BorderColor = Color.DarkGray;
             AuthBtn.DisabledState.CustomBorderColor = Color.DarkGray;
@@ -312,12 +318,12 @@ namespace PatientsAccounting.Forms
             // guna2HtmlLabel1
             // 
             guna2HtmlLabel1.BackColor = Color.Transparent;
-            guna2HtmlLabel1.Font = new Font("Kristen ITC", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            guna2HtmlLabel1.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             guna2HtmlLabel1.ForeColor = Color.Transparent;
             guna2HtmlLabel1.Location = new Point(28, 21);
             guna2HtmlLabel1.Margin = new Padding(2);
             guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(142, 35);
+            guna2HtmlLabel1.Size = new Size(104, 27);
             guna2HtmlLabel1.TabIndex = 30;
             guna2HtmlLabel1.Text = "HealthHub";
             guna2HtmlLabel1.TextAlignment = ContentAlignment.MiddleCenter;
@@ -340,5 +346,6 @@ namespace PatientsAccounting.Forms
         private Guna2Button MakeVisitBtn;
         private Guna2Button AuthBtn;
         private Guna2Button HospitalsBtn;
+        private Panel panelDesktop;
     }
 }
