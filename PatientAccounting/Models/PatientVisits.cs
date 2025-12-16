@@ -21,7 +21,7 @@ namespace PatientsAccounting.Models
         public DateTime appointment_date { get; set; }
 
         [Required]
-        public int id_doctor_hospitals { get; set; }
+        public int id_doctor_working_hours { get; set; }
 
         [Required]
         public int id_visit_type { get; set; }

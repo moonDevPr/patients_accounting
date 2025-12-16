@@ -11,8 +11,7 @@ namespace PatientsAccounting.Models
         [Required]
         public int code { get; set; }
 
-        [Required]
-        public int id_hospital { get; set; }
+        public int? id_hospital { get; set; }
 
         [Required]
         public int id_patient { get; set; }
