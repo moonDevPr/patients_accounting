@@ -61,11 +61,11 @@ namespace PatientsAccounting.Forms
                     var currentPatient = Patient.GetPatientByUsername(username);
 
                     var currentDoctor = Doctor.GetDoctorByUsername(username);
-                    if (currentDoctor != null )
+                    if (currentDoctor != null)
                     {
                         var (doctor, credentials, role) = currentDoctor.Value;
                         MessageBox.Show($"Добро пожаловать, {doctor.surname} {doctor.name} {doctor.patronymic}!");
-                        DoctorsMenuForm form = new DoctorsMenuForm();   
+                        DoctorsMenuForm form = new DoctorsMenuForm();
                         this.Close();
                         form.Show();
 
@@ -180,6 +180,11 @@ namespace PatientsAccounting.Forms
                 var hash = sha256.ComputeHash(bytes);
                 return Convert.ToBase64String(hash);
             }
+        }
+
+        private void MainPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

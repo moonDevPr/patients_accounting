@@ -72,7 +72,7 @@ namespace PatientsAccounting.Forms
             leftMenuPanel.Location = new Point(0, 0);
             leftMenuPanel.Name = "leftMenuPanel";
             leftMenuPanel.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            leftMenuPanel.Size = new Size(250, 750);
+            leftMenuPanel.Size = new Size(250, 848);
             leftMenuPanel.TabIndex = 0;
             // 
             // HospitalsBtn
@@ -120,7 +120,7 @@ namespace PatientsAccounting.Forms
             logoutBtn.HoverState.FillColor = Color.FromArgb(232, 17, 35);
             logoutBtn.ImageAlign = HorizontalAlignment.Left;
             logoutBtn.ImageOffset = new Point(10, 0);
-            logoutBtn.Location = new Point(0, 700);
+            logoutBtn.Location = new Point(0, 798);
             logoutBtn.Name = "logoutBtn";
             logoutBtn.ShadowDecoration.CustomizableEdges = customizableEdges4;
             logoutBtn.Size = new Size(250, 50);
@@ -254,14 +254,14 @@ namespace PatientsAccounting.Forms
             contentPanel.Location = new Point(250, 0);
             contentPanel.Name = "contentPanel";
             contentPanel.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            contentPanel.Size = new Size(950, 750);
+            contentPanel.Size = new Size(1055, 848);
             contentPanel.TabIndex = 2;
             // 
             // panelDesktop
             // 
             panelDesktop.Location = new Point(28, 99);
             panelDesktop.Name = "panelDesktop";
-            panelDesktop.Size = new Size(900, 628);
+            panelDesktop.Size = new Size(1005, 727);
             panelDesktop.TabIndex = 0;
             // 
             // AuthBtn
@@ -275,7 +275,7 @@ namespace PatientsAccounting.Forms
             AuthBtn.FillColor = Color.FromArgb(64, 64, 64);
             AuthBtn.Font = new Font("Segoe UI", 11F);
             AuthBtn.ForeColor = Color.White;
-            AuthBtn.Location = new Point(714, 21);
+            AuthBtn.Location = new Point(819, 21);
             AuthBtn.Name = "AuthBtn";
             AuthBtn.ShadowDecoration.CustomizableEdges = customizableEdges16;
             AuthBtn.Size = new Size(214, 57);
@@ -298,7 +298,7 @@ namespace PatientsAccounting.Forms
             // 
             // PatientsMenu
             // 
-            ClientSize = new Size(1200, 750);
+            ClientSize = new Size(1305, 848);
             Controls.Add(contentPanel);
             Controls.Add(leftMenuPanel);
             FormBorderStyle = FormBorderStyle.FixedSingle;
