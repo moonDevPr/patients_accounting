@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PatientsAccounting.Models;
+using PatientsAccounting.Services;
 using PatientsAcounting.Services;
 using System;
 using System.Collections.Generic;
@@ -56,9 +57,22 @@ namespace PatientsAccounting.Forms
                         CurrentUser.RoleId = authUser.id_users_role.Value;
                     }
 
-                    // ДОБАВЛЕНО: Проверяем кто под этим логином - пациент или сотрудник
-                    // 1. Сначала пробуем найти пациента
+
                     var currentPatient = Patient.GetPatientByUsername(username);
+
+                    var currentDoctor = Doctor.GetDoctorByUsername(username);
+                    if (currentDoctor != null )
+                    {
+                        var (doctor, credentials, role) = currentDoctor.Value;
+                        MessageBox.Show($"Добро пожаловать, {doctor.surname} {doctor.name} {doctor.patronymic}!");
+                        DoctorsMenuForm form = new DoctorsMenuForm();   
+                        this.Close();
+                        form.Show();
+
+                        return;
+
+                    }
+
 
                     if (currentPatient != null)
                     {
@@ -75,15 +89,9 @@ namespace PatientsAccounting.Forms
                             menu.Show();
                             this.Close();
                         }
-                        else
-                        {
-                            MessageBox.Show("Ошибка: у пациента некорректная роль");
-                        }
                     }
                     else
                     {
-                        // Не пациент - значит сотрудник (аналитик, врач и т.д.)
-                        // ДОБАВЛЕНО: Получаем роль сотрудника
                         UsersRole? employeeRole = null;
                         using (var context = new ApplicationDbContext())
                         {
