@@ -1,46 +1,33 @@
 ﻿using Guna.UI2.WinForms;
-using PatientsAccounting.Models;
+using PatientAccounting.Forms.PatientsForms.MenuForms;
 using PatientsAccounting.Forms;
+using PatientsAccounting.Models;
 using PatientsAcounting.Services;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using PatientAccounting.Forms.PatientsForms.MenuForms;
 
 namespace PatientsAccounting.Forms
 {
-    public partial class PatientsMenu : Form
+    public partial class DoctorsMenuForm : Form
     {
-        private Form currentChildForm;
+        private Form? currentChildForm;
 
-
-        public PatientsMenu()
+        public DoctorsMenuForm()
         {
             InitializeComponent();
-            AuthBtn.Visible = !CurrentUser.IsAuthenticated;
-            logoutBtn.Visible = CurrentUser.IsAuthenticated;
 
-
+            if (AuthBtn != null && logoutBtn != null)
+            {
+                AuthBtn.Visible = !CurrentUser.IsAuthenticated;
+                logoutBtn.Visible = CurrentUser.IsAuthenticated;
+            }
         }
 
         private void OpenChildForm(Form childForm)
         {
-            //if (currentChildForm != null)
-            //{
-            //    currentChildForm.Close();
-            //}
-
-            //currentChildForm = childForm;
-            //childForm.TopLevel = false;
-            //childForm.FormBorderStyle = FormBorderStyle.None;
-            //childForm.Dock = DockStyle.Fill;
-
-            //childForm.BringToFront();
-            //childForm.Show();
-
-            
             if (currentChildForm != null)
-            { 
+            {
                 currentChildForm.Close();
             }
 
@@ -48,22 +35,18 @@ namespace PatientsAccounting.Forms
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
-            childForm.AutoScroll = true; // ← ДОБАВЬ!
+            childForm.AutoScroll = true;
 
-            // ВАЖНО: Добавляем форму в panelDesktop
             if (panelDesktop != null)
             {
-                // Очищаем panelDesktop и добавляем дочернюю форму
                 panelDesktop.Controls.Clear();
                 panelDesktop.Controls.Add(childForm);
 
-                // Убедимся, что panelDesktop видим и поверх других элементов
                 panelDesktop.Visible = true;
                 panelDesktop.BringToFront();
             }
             else
             {
-                // Если panelDesktop не найден, откроем как отдельное окно
                 MessageBox.Show("Панель panelDesktop не найдена!", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 childForm.TopLevel = true;
@@ -73,9 +56,7 @@ namespace PatientsAccounting.Forms
 
             childForm.BringToFront();
             childForm.Show();
-        
         }
-
 
         private void DashboardBtn_Click(object sender, EventArgs e)
         {
@@ -84,7 +65,7 @@ namespace PatientsAccounting.Forms
 
         private void ProfileBtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Профиль пациента");
+            MessageBox.Show("Профиль врача");
         }
 
         private void AuthBtn_Click(object sender, EventArgs e)
@@ -96,37 +77,33 @@ namespace PatientsAccounting.Forms
 
         private void CardBtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Медицинская карточка");
+            DoctorsRegistrationForm doctorsRegistration = new DoctorsRegistrationForm();
+            doctorsRegistration.Show();
+
+
         }
 
         private void HistoryBtn_Click(object sender, EventArgs e)
         {
-            
             DoctorScheduleForm scheduleForm = new DoctorScheduleForm();
             OpenChildForm(scheduleForm);
-        
         }
 
-        private void MakeVisitBtn_Click(Object sender, EventArgs e)
+        private void MakeVisitBtn_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Записаться на прием");
         }
 
-        private void HospitalsBtn_Click(Object sender, EventArgs e)
+        private void HospitalsBtn_Click(object sender, EventArgs e)
         {
-           
-            // Создаем форму больниц
             HospitalsForm hospitalsForm = new HospitalsForm();
 
-            // Можно задать размер формы под панель
             if (panelDesktop != null)
             {
                 hospitalsForm.Size = panelDesktop.Size;
             }
 
-            // Открываем форму внутри panelDesktop
             OpenChildForm(hospitalsForm);
-        
         }
 
         private void LogoutBtn_Click(object sender, EventArgs e)
@@ -153,6 +130,9 @@ namespace PatientsAccounting.Forms
             this.WindowState = FormWindowState.Minimized;
         }
 
-        
+        private void contentPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace PatientAccounting
+namespace PatientAccounting.Forms.PatientsForms.MenuForms
 {
     public partial class DoctorScheduleForm : Form
     {
@@ -30,11 +30,11 @@ namespace PatientAccounting
         private void InitializeForm()
         {
             // Устанавливаем размер формы под панель
-            this.Size = new Size(900, 600); // Уменьшили размер формы
-            this.StartPosition = FormStartPosition.CenterScreen; // Центрируем форму на экране
-            this.BackColor = Color.FromArgb(45, 45, 48);
-            this.Text = "Расписание врачей";
-            this.Padding = new Padding(10); // Уменьшили padding
+            Size = new Size(900, 600); // Уменьшили размер формы
+            StartPosition = FormStartPosition.CenterScreen; // Центрируем форму на экране
+            BackColor = Color.FromArgb(45, 45, 48);
+            Text = "Расписание врачей";
+            Padding = new Padding(10); // Уменьшили padding
 
             SetupUI();
         }
@@ -63,7 +63,7 @@ namespace PatientAccounting
                 Cursor = Cursors.Hand
             };
             backButton.Location = new Point(mainPanel.Width - backButton.Width - 40, 20);
-            backButton.Click += (s, e) => this.Close();
+            backButton.Click += (s, e) => Close();
 
             // Заголовок
             var titleLabel = new Guna2HtmlLabel
@@ -231,21 +231,21 @@ namespace PatientAccounting
             CenterPanel(mainPanel);
 
             // Добавляем основную панель на форму
-            this.Controls.Add(mainPanel);
+            Controls.Add(mainPanel);
         }
 
         private void CenterPanel(Control panel)
         {
             // Центрируем панель относительно формы
             panel.Location = new Point(
-                (this.ClientSize.Width - panel.Width) / 2,
-                (this.ClientSize.Height - panel.Height) / 2
+                (ClientSize.Width - panel.Width) / 2,
+                (ClientSize.Height - panel.Height) / 2
             );
         }
 
        
 
-        private void Calendar_DateChanged(object? sender, DateRangeEventArgs e)
+        private void Calendar_DateChanged(object sender, DateRangeEventArgs e)
         {
             LoadSchedule();
         }
@@ -274,7 +274,7 @@ namespace PatientAccounting
             }
         }
 
-        private void HospitalComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        private void HospitalComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (hospitalComboBox?.SelectedItem != null)
             {
@@ -314,7 +314,7 @@ namespace PatientAccounting
             }
         }
 
-        private void DepartmentComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        private void DepartmentComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (departmentComboBox?.SelectedItem != null && hospitalComboBox?.SelectedItem != null)
             {
@@ -365,7 +365,7 @@ namespace PatientAccounting
             }
         }
 
-        private void DoctorComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        private void DoctorComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadSchedule();
         }
@@ -410,7 +410,7 @@ namespace PatientAccounting
             }
         }
 
-        private DoctorWorkingHours? GetDoctorSchedule(ApplicationDbContext db,
+        private DoctorWorkingHours GetDoctorSchedule(ApplicationDbContext db,
     int doctorId, int hospitalId, string dayOfWeek)
         {
             try
@@ -594,7 +594,7 @@ namespace PatientAccounting
             timeSlotsPanel.Controls.Add(timeSlotPanel);
         }
 
-        private void BookButton_Click(object? sender, EventArgs e)
+        private void BookButton_Click(object sender, EventArgs e)
         {
             if (sender is Guna2Button button && button.Tag is object tag)
             {

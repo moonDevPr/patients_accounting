@@ -7,7 +7,7 @@ using System.Linq;
 using PatientsAccounting.Models;
 using Guna.UI2.WinForms;
 
-namespace PatientAccounting
+namespace PatientAccounting.Forms.PatientsForms.MenuForms
 {
     public partial class HospitalsForm : Form
     {
@@ -60,7 +60,7 @@ namespace PatientAccounting
                 Cursor = Cursors.Hand,
                 Anchor = AnchorStyles.Right
             };
-            backButton.Click += (s, e) => this.Close();
+            backButton.Click += (s, e) => Close();
             mainLayout.Controls.Add(backButton, 1, 0);
 
             // Заголовок по центру (span 2 колонки)
@@ -110,7 +110,7 @@ namespace PatientAccounting
             var rightPanel = CreateRightPanel();
             mainLayout.Controls.Add(rightPanel, 1, 4);
 
-            this.Controls.Add(mainLayout);
+            Controls.Add(mainLayout);
         }
 
         private Guna2Panel CreateLeftPanel()

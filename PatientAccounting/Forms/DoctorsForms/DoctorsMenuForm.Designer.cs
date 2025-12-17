@@ -2,7 +2,7 @@
 
 namespace PatientsAccounting.Forms
 {
-    partial class PatientsMenu
+    partial class DoctorsMenuForm : Form
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -25,8 +25,8 @@ namespace PatientsAccounting.Forms
 
         private void InitializeComponent()
         {
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges1 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges2 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges3 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -39,12 +39,15 @@ namespace PatientsAccounting.Forms
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges13 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges14 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges16 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             leftMenuPanel = new Guna2Panel();
             HospitalsBtn = new Guna2Button();
+            MakeVisitBtn = new Guna2Button();
             logoutBtn = new Guna2Button();
             DoctorsScheduleBtn = new Guna2Button();
             CardBtn = new Guna2Button();
@@ -62,17 +65,18 @@ namespace PatientsAccounting.Forms
             // 
             leftMenuPanel.BackColor = Color.FromArgb(30, 30, 30);
             leftMenuPanel.Controls.Add(HospitalsBtn);
+            leftMenuPanel.Controls.Add(MakeVisitBtn);
             leftMenuPanel.Controls.Add(logoutBtn);
             leftMenuPanel.Controls.Add(DoctorsScheduleBtn);
             leftMenuPanel.Controls.Add(CardBtn);
             leftMenuPanel.Controls.Add(profileBtn);
             leftMenuPanel.Controls.Add(dashboardBtn);
-            leftMenuPanel.CustomizableEdges = customizableEdges13;
+            leftMenuPanel.CustomizableEdges = customizableEdges15;
             leftMenuPanel.Dock = DockStyle.Left;
             leftMenuPanel.Location = new Point(0, 0);
             leftMenuPanel.Name = "leftMenuPanel";
-            leftMenuPanel.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            leftMenuPanel.Size = new Size(250, 750);
+            leftMenuPanel.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            leftMenuPanel.Size = new Size(250, 885);
             leftMenuPanel.TabIndex = 0;
             // 
             // HospitalsBtn
@@ -93,7 +97,7 @@ namespace PatientsAccounting.Forms
             HospitalsBtn.HoverState.FillColor = Color.FromArgb(50, 50, 50);
             HospitalsBtn.ImageAlign = HorizontalAlignment.Left;
             HospitalsBtn.ImageOffset = new Point(10, 0);
-            HospitalsBtn.Location = new Point(0, 362);
+            HospitalsBtn.Location = new Point(0, 447);
             HospitalsBtn.Name = "HospitalsBtn";
             HospitalsBtn.ShadowDecoration.CustomizableEdges = customizableEdges2;
             HospitalsBtn.Size = new Size(250, 85);
@@ -103,12 +107,40 @@ namespace PatientsAccounting.Forms
             HospitalsBtn.TextOffset = new Point(20, 0);
             HospitalsBtn.Click += HospitalsBtn_Click;
             // 
+            // MakeVisitBtn
+            // 
+            MakeVisitBtn.Animated = true;
+            MakeVisitBtn.BackColor = Color.Transparent;
+            MakeVisitBtn.BorderRadius = 10;
+            MakeVisitBtn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
+            MakeVisitBtn.CustomizableEdges = customizableEdges3;
+            MakeVisitBtn.DisabledState.BorderColor = Color.DarkGray;
+            MakeVisitBtn.DisabledState.CustomBorderColor = Color.DarkGray;
+            MakeVisitBtn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            MakeVisitBtn.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            MakeVisitBtn.Dock = DockStyle.Top;
+            MakeVisitBtn.FillColor = Color.Transparent;
+            MakeVisitBtn.Font = new Font("Segoe UI", 11F);
+            MakeVisitBtn.ForeColor = Color.White;
+            MakeVisitBtn.HoverState.FillColor = Color.FromArgb(50, 50, 50);
+            MakeVisitBtn.ImageAlign = HorizontalAlignment.Left;
+            MakeVisitBtn.ImageOffset = new Point(10, 0);
+            MakeVisitBtn.Location = new Point(0, 362);
+            MakeVisitBtn.Name = "MakeVisitBtn";
+            MakeVisitBtn.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            MakeVisitBtn.Size = new Size(250, 85);
+            MakeVisitBtn.TabIndex = 5;
+            MakeVisitBtn.Text = "Посещения";
+            MakeVisitBtn.TextAlign = HorizontalAlignment.Left;
+            MakeVisitBtn.TextOffset = new Point(20, 0);
+            MakeVisitBtn.Click += MakeVisitBtn_Click;
+            // 
             // logoutBtn
             // 
             logoutBtn.Animated = true;
             logoutBtn.BackColor = Color.Transparent;
             logoutBtn.BorderRadius = 10;
-            logoutBtn.CustomizableEdges = customizableEdges3;
+            logoutBtn.CustomizableEdges = customizableEdges5;
             logoutBtn.DisabledState.BorderColor = Color.DarkGray;
             logoutBtn.DisabledState.CustomBorderColor = Color.DarkGray;
             logoutBtn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -120,9 +152,9 @@ namespace PatientsAccounting.Forms
             logoutBtn.HoverState.FillColor = Color.FromArgb(232, 17, 35);
             logoutBtn.ImageAlign = HorizontalAlignment.Left;
             logoutBtn.ImageOffset = new Point(10, 0);
-            logoutBtn.Location = new Point(0, 700);
+            logoutBtn.Location = new Point(0, 835);
             logoutBtn.Name = "logoutBtn";
-            logoutBtn.ShadowDecoration.CustomizableEdges = customizableEdges4;
+            logoutBtn.ShadowDecoration.CustomizableEdges = customizableEdges6;
             logoutBtn.Size = new Size(250, 50);
             logoutBtn.TabIndex = 4;
             logoutBtn.Text = "Выйти";
@@ -136,7 +168,7 @@ namespace PatientsAccounting.Forms
             DoctorsScheduleBtn.BackColor = Color.Transparent;
             DoctorsScheduleBtn.BorderRadius = 10;
             DoctorsScheduleBtn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            DoctorsScheduleBtn.CustomizableEdges = customizableEdges5;
+            DoctorsScheduleBtn.CustomizableEdges = customizableEdges7;
             DoctorsScheduleBtn.DisabledState.BorderColor = Color.DarkGray;
             DoctorsScheduleBtn.DisabledState.CustomBorderColor = Color.DarkGray;
             DoctorsScheduleBtn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -150,10 +182,10 @@ namespace PatientsAccounting.Forms
             DoctorsScheduleBtn.ImageOffset = new Point(10, 0);
             DoctorsScheduleBtn.Location = new Point(0, 277);
             DoctorsScheduleBtn.Name = "DoctorsScheduleBtn";
-            DoctorsScheduleBtn.ShadowDecoration.CustomizableEdges = customizableEdges6;
+            DoctorsScheduleBtn.ShadowDecoration.CustomizableEdges = customizableEdges8;
             DoctorsScheduleBtn.Size = new Size(250, 85);
             DoctorsScheduleBtn.TabIndex = 3;
-            DoctorsScheduleBtn.Text = "Расписание врачей";
+            DoctorsScheduleBtn.Text = "Расписание врача";
             DoctorsScheduleBtn.TextAlign = HorizontalAlignment.Left;
             DoctorsScheduleBtn.TextOffset = new Point(20, 0);
             DoctorsScheduleBtn.Click += HistoryBtn_Click;
@@ -164,7 +196,7 @@ namespace PatientsAccounting.Forms
             CardBtn.BackColor = Color.Transparent;
             CardBtn.BorderRadius = 10;
             CardBtn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            CardBtn.CustomizableEdges = customizableEdges7;
+            CardBtn.CustomizableEdges = customizableEdges9;
             CardBtn.DisabledState.BorderColor = Color.DarkGray;
             CardBtn.DisabledState.CustomBorderColor = Color.DarkGray;
             CardBtn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -178,10 +210,10 @@ namespace PatientsAccounting.Forms
             CardBtn.ImageOffset = new Point(10, 0);
             CardBtn.Location = new Point(0, 184);
             CardBtn.Name = "CardBtn";
-            CardBtn.ShadowDecoration.CustomizableEdges = customizableEdges8;
+            CardBtn.ShadowDecoration.CustomizableEdges = customizableEdges10;
             CardBtn.Size = new Size(250, 93);
             CardBtn.TabIndex = 2;
-            CardBtn.Text = "Карточка пациента";
+            CardBtn.Text = "Регистрация врача";
             CardBtn.TextAlign = HorizontalAlignment.Left;
             CardBtn.TextOffset = new Point(20, 0);
             CardBtn.Click += CardBtn_Click;
@@ -192,7 +224,7 @@ namespace PatientsAccounting.Forms
             profileBtn.BackColor = Color.Transparent;
             profileBtn.BorderRadius = 10;
             profileBtn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
-            profileBtn.CustomizableEdges = customizableEdges9;
+            profileBtn.CustomizableEdges = customizableEdges11;
             profileBtn.DisabledState.BorderColor = Color.DarkGray;
             profileBtn.DisabledState.CustomBorderColor = Color.DarkGray;
             profileBtn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -206,10 +238,10 @@ namespace PatientsAccounting.Forms
             profileBtn.ImageOffset = new Point(10, 0);
             profileBtn.Location = new Point(0, 90);
             profileBtn.Name = "profileBtn";
-            profileBtn.ShadowDecoration.CustomizableEdges = customizableEdges10;
+            profileBtn.ShadowDecoration.CustomizableEdges = customizableEdges12;
             profileBtn.Size = new Size(250, 94);
             profileBtn.TabIndex = 1;
-            profileBtn.Text = "Профиль";
+            profileBtn.Text = "Профиль врача";
             profileBtn.TextAlign = HorizontalAlignment.Left;
             profileBtn.TextOffset = new Point(20, 0);
             profileBtn.Click += ProfileBtn_Click;
@@ -221,7 +253,7 @@ namespace PatientsAccounting.Forms
             dashboardBtn.BorderRadius = 10;
             dashboardBtn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
             dashboardBtn.Checked = true;
-            dashboardBtn.CustomizableEdges = customizableEdges11;
+            dashboardBtn.CustomizableEdges = customizableEdges13;
             dashboardBtn.DisabledState.BorderColor = Color.DarkGray;
             dashboardBtn.DisabledState.CustomBorderColor = Color.DarkGray;
             dashboardBtn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -235,7 +267,7 @@ namespace PatientsAccounting.Forms
             dashboardBtn.ImageOffset = new Point(10, 0);
             dashboardBtn.Location = new Point(0, 0);
             dashboardBtn.Name = "dashboardBtn";
-            dashboardBtn.ShadowDecoration.CustomizableEdges = customizableEdges12;
+            dashboardBtn.ShadowDecoration.CustomizableEdges = customizableEdges14;
             dashboardBtn.Size = new Size(250, 90);
             dashboardBtn.TabIndex = 0;
             dashboardBtn.Text = "Главная";
@@ -249,25 +281,26 @@ namespace PatientsAccounting.Forms
             contentPanel.Controls.Add(panelDesktop);
             contentPanel.Controls.Add(AuthBtn);
             contentPanel.Controls.Add(guna2HtmlLabel1);
-            contentPanel.CustomizableEdges = customizableEdges17;
+            contentPanel.CustomizableEdges = customizableEdges19;
             contentPanel.Dock = DockStyle.Fill;
             contentPanel.Location = new Point(250, 0);
             contentPanel.Name = "contentPanel";
-            contentPanel.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            contentPanel.Size = new Size(950, 750);
+            contentPanel.ShadowDecoration.CustomizableEdges = customizableEdges20;
+            contentPanel.Size = new Size(1230, 885);
             contentPanel.TabIndex = 2;
+            contentPanel.Paint += contentPanel_Paint;
             // 
             // panelDesktop
             // 
             panelDesktop.Location = new Point(28, 99);
             panelDesktop.Name = "panelDesktop";
-            panelDesktop.Size = new Size(900, 628);
+            panelDesktop.Size = new Size(1202, 759);
             panelDesktop.TabIndex = 0;
             // 
             // AuthBtn
             // 
             AuthBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            AuthBtn.CustomizableEdges = customizableEdges15;
+            AuthBtn.CustomizableEdges = customizableEdges17;
             AuthBtn.DisabledState.BorderColor = Color.DarkGray;
             AuthBtn.DisabledState.CustomBorderColor = Color.DarkGray;
             AuthBtn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -275,9 +308,9 @@ namespace PatientsAccounting.Forms
             AuthBtn.FillColor = Color.FromArgb(64, 64, 64);
             AuthBtn.Font = new Font("Segoe UI", 11F);
             AuthBtn.ForeColor = Color.White;
-            AuthBtn.Location = new Point(714, 21);
+            AuthBtn.Location = new Point(994, 21);
             AuthBtn.Name = "AuthBtn";
-            AuthBtn.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            AuthBtn.ShadowDecoration.CustomizableEdges = customizableEdges18;
             AuthBtn.Size = new Size(214, 57);
             AuthBtn.TabIndex = 31;
             AuthBtn.Text = "Войти";
@@ -296,13 +329,13 @@ namespace PatientsAccounting.Forms
             guna2HtmlLabel1.Text = "HealthHub";
             guna2HtmlLabel1.TextAlignment = ContentAlignment.MiddleCenter;
             // 
-            // PatientsMenu
+            // DoctorsMenuForm
             // 
-            ClientSize = new Size(1200, 750);
+            ClientSize = new Size(1480, 885);
             Controls.Add(contentPanel);
             Controls.Add(leftMenuPanel);
             FormBorderStyle = FormBorderStyle.FixedSingle;
-            Name = "PatientsMenu";
+            Name = "DoctorsMenuForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "HealthHub - Панель пациента";
             leftMenuPanel.ResumeLayout(false);
@@ -311,6 +344,7 @@ namespace PatientsAccounting.Forms
             ResumeLayout(false);
         }
         private Guna2HtmlLabel guna2HtmlLabel1;
+        private Guna2Button MakeVisitBtn;
         private Guna2Button AuthBtn;
         private Guna2Button HospitalsBtn;
         private Panel panelDesktop;

@@ -47,6 +47,12 @@ namespace PatientsAccounting.Forms
                 patientsMenu.Show();
             }
 
+            if ((CurrentUser.IsAuthenticated && CurrentUser.RoleName == "Врач"))
+            {
+                DoctorsMenuForm doctorsMenu = new DoctorsMenuForm();
+                doctorsMenu.Show();
+            }
+
 
         }
     }
