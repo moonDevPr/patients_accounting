@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static PatientsAcounting.Services.CurrentUser;
 
 namespace PatientsAccounting.Forms
 {
@@ -57,22 +58,26 @@ namespace PatientsAccounting.Forms
                         CurrentUser.RoleId = authUser.id_users_role.Value;
                     }
 
-
                     var currentPatient = Patient.GetPatientByUsername(username);
-
                     var currentDoctor = Doctor.GetDoctorByUsername(username);
-                    if (currentDoctor != null )
+
+                    // ВОТ ЗДЕСЬ НУЖНО ДОБАВИТЬ КОД ДЛЯ СОХРАНЕНИЯ ДАННЫХ ВРАЧА
+                    if (currentDoctor != null)
                     {
                         var (doctor, credentials, role) = currentDoctor.Value;
+
+                        // ДОБАВЬТЕ ЭТИ СТРОКИ ДЛЯ СОХРАНЕНИЯ ДАННЫХ ВРАЧА:
+                        CurrentUser.DoctorId = doctor.id;
+                        CurrentUser.DoctorFullName = $"{doctor.surname} {doctor.name} {doctor.patronymic}";
+                        CurrentUser.RoleName = role.role_name;
+
                         MessageBox.Show($"Добро пожаловать, {doctor.surname} {doctor.name} {doctor.patronymic}!");
-                        DoctorsMenuForm form = new DoctorsMenuForm();   
+                        DoctorsMenuForm form = new DoctorsMenuForm();
                         this.Close();
                         form.Show();
 
                         return;
-
                     }
-
 
                     if (currentPatient != null)
                     {
@@ -117,8 +122,11 @@ namespace PatientsAccounting.Forms
                             else if (employeeRole.role_name == "Врач")
                             {
                                 MessageBox.Show($"Добро пожаловать, врач {username}!");
-                                // TODO: Добавить открытие формы врача
-                                MessageBox.Show("Форма для врачей в разработке");
+                                // ТОЛЬКО для врачей, которые не попали в метод GetDoctorByUsername
+                                // Например, если врач есть в UsersCredentials но нет в таблице Doctors
+                                DoctorsMenuForm form = new DoctorsMenuForm();
+                                this.Close();
+                                form.Show();
                             }
                             else if (employeeRole.role_name == "Главный врач")
                             {
