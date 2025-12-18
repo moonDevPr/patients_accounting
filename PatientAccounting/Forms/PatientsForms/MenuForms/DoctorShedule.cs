@@ -25,6 +25,13 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
         {
             InitializeForm();
             LoadHospitals();
+
+            // Устанавливаем минимальную дату на сегодня
+            if (calendar != null)
+            {
+                calendar.MinDate = DateTime.Today;
+                calendar.SetDate(DateTime.Today);
+            }
         }
 
         private void InitializeForm()

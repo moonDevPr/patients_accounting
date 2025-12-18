@@ -130,7 +130,7 @@ namespace PatientsAccounting.Forms
             MakeVisitBtn.ShadowDecoration.CustomizableEdges = customizableEdges4;
             MakeVisitBtn.Size = new Size(250, 85);
             MakeVisitBtn.TabIndex = 5;
-            MakeVisitBtn.Text = "Посещения";
+            MakeVisitBtn.Text = "Мои приемы";
             MakeVisitBtn.TextAlign = HorizontalAlignment.Left;
             MakeVisitBtn.TextOffset = new Point(20, 0);
             MakeVisitBtn.Click += MakeVisitBtn_Click;
@@ -185,7 +185,7 @@ namespace PatientsAccounting.Forms
             DoctorsScheduleBtn.ShadowDecoration.CustomizableEdges = customizableEdges8;
             DoctorsScheduleBtn.Size = new Size(250, 85);
             DoctorsScheduleBtn.TabIndex = 3;
-            DoctorsScheduleBtn.Text = "Расписание врача";
+            DoctorsScheduleBtn.Text = "Найти пациента";
             DoctorsScheduleBtn.TextAlign = HorizontalAlignment.Left;
             DoctorsScheduleBtn.TextOffset = new Point(20, 0);
             DoctorsScheduleBtn.Click += HistoryBtn_Click;
@@ -324,7 +324,7 @@ namespace PatientsAccounting.Forms
             guna2HtmlLabel1.Location = new Point(28, 21);
             guna2HtmlLabel1.Margin = new Padding(2);
             guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(125, 31);
+            guna2HtmlLabel1.Size = new Size(104, 27);
             guna2HtmlLabel1.TabIndex = 30;
             guna2HtmlLabel1.Text = "HealthHub";
             guna2HtmlLabel1.TextAlignment = ContentAlignment.MiddleCenter;
