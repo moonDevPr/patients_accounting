@@ -324,7 +324,7 @@ namespace PatientsAccounting.Forms
             guna2HtmlLabel1.Location = new Point(28, 21);
             guna2HtmlLabel1.Margin = new Padding(2);
             guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(104, 27);
+            guna2HtmlLabel1.Size = new Size(89, 22);
             guna2HtmlLabel1.TabIndex = 30;
             guna2HtmlLabel1.Text = "HealthHub";
             guna2HtmlLabel1.TextAlignment = ContentAlignment.MiddleCenter;
@@ -337,7 +337,7 @@ namespace PatientsAccounting.Forms
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "DoctorsMenuForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "HealthHub - Панель пациента";
+            Text = "HealthHub - Панель врача";
             leftMenuPanel.ResumeLayout(false);
             contentPanel.ResumeLayout(false);
             contentPanel.PerformLayout();

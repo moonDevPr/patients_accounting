@@ -156,7 +156,9 @@ namespace PatientAccounting
                 Format = DateTimePickerFormat.Custom,
                 CustomFormat = "dd.MM.yyyy HH:mm",
                 ShowUpDown = true,
-                Value = DateTime.Now
+                Value = DateTime.Now,
+                MinDate = DateTime.Today, // ЗАПРЕЩАЕМ ВЫБОР ПРОШЛЫХ ДАТ
+                MaxDate = DateTime.Today.AddYears(1) // ОПЦИОНАЛЬНО: ограничиваем выбор на год вперед
             };
 
             yPos += 55;
@@ -649,6 +651,27 @@ namespace PatientAccounting
                     return;
                 }
 
+
+                // ПРОВЕРКА ДАТЫ - НЕ РАНЬШЕ СЕГОДНЯШНЕГО ДНЯ
+                DateTime appointmentDate = dtpVisitDate.Value;
+                if (appointmentDate.Date < DateTime.Today)
+                {
+                    MessageBox.Show("Нельзя выбрать прошедшую дату для визита!", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    dtpVisitDate.Value = DateTime.Now; // Сбрасываем на текущую дату
+                    return;
+                }
+
+                // ПРОВЕРКА ВРЕМЕНИ - если выбрана сегодняшняя дата
+                if (appointmentDate.Date == DateTime.Today && appointmentDate.TimeOfDay < DateTime.Now.TimeOfDay)
+                {
+                    MessageBox.Show("Нельзя выбрать прошедшее время на сегодня!", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    dtpVisitDate.Value = DateTime.Now; // Сбрасываем на текущее время
+                    return;
+                }
+
+
                 using var db = new ApplicationDbContext();
 
                 int doctorId = (int)cmbDoctor.SelectedValue;
@@ -657,7 +680,7 @@ namespace PatientAccounting
                 int visitTypeId = (int)cmbVisitType.SelectedValue;
                 int entryTypeId = (int)cmbEntryType.SelectedValue;
                 int analysisId = (int)cmbAnalysis.SelectedValue; // ОБЯЗАТЕЛЬНОЕ ПОЛЕ
-                DateTime appointmentDate = dtpVisitDate.Value;
+                //DateTime appointmentDate = dtpVisitDate.Value;
                 int? diagnosisId = cmbDiagnosis.SelectedValue as int?;
 
                 // Проверка существования карты пациента

@@ -1046,7 +1046,7 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
                         MessageBox.Show("Запись успешно создана!",
                             "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        LoadSchedule(); // Обновляем расписание
+                        RefreshScheduleAfterBooking();
                     }
                     catch (DbUpdateException dbEx)
                     {
@@ -1088,6 +1088,55 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
             {
                 MessageBox.Show($"Ошибка при создании записи: {ex.Message}\n\n{ex.StackTrace}",
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void RefreshScheduleAfterBooking()
+        {
+            try
+            {
+                // 1. Сохраняем текущие выбранные значения
+                var selectedHospital = hospitalComboBox.SelectedItem as Hospitals;
+                var selectedDepartment = departmentComboBox.SelectedItem as Department;
+                var selectedDoctor = doctorComboBox.SelectedItem;
+                var selectedDate = calendar.SelectionStart;
+
+                // 2. Очищаем панель слотов
+                timeSlotsPanel.Controls.Clear();
+
+                // 3. Немедленно загружаем обновленное расписание
+                LoadSchedule();
+
+                // 4. Визуальное подтверждение
+                var messageLabel = new Guna2HtmlLabel
+                {
+                    Text = "✓ Вы успешно записаны! Расписание обновлено.",
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    ForeColor = Color.LightGreen,
+                    AutoSize = true,
+                    Margin = new Padding(10, 20, 10, 10)
+                };
+
+                // Добавляем сообщение поверх слотов
+                timeSlotsPanel.Controls.Add(messageLabel);
+                messageLabel.BringToFront();
+
+                // 5. Через 3 секунды убираем сообщение
+                var timer = new System.Windows.Forms.Timer
+                {
+                    Interval = 3000,
+                    Enabled = true
+                };
+                timer.Tick += (s, e) =>
+                {
+                    timeSlotsPanel.Controls.Remove(messageLabel);
+                    timer.Stop();
+                    timer.Dispose();
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка обновления расписания: {ex.Message}");
             }
         }
 

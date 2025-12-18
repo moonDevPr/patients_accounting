@@ -31,7 +31,7 @@ namespace PatientsAcounting
             }
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new PatientsMenu());
+            Application.Run(new DoctorsMenuForm());
         }
     }
 }
