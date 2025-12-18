@@ -98,9 +98,10 @@ namespace PatientsAccounting.Forms.AnalystsForms
             MainPanel.CustomizableEdges = customizableEdges17;
             MainPanel.Dock = DockStyle.Fill;
             MainPanel.Location = new Point(0, 0);
+            MainPanel.Margin = new Padding(4);
             MainPanel.Name = "MainPanel";
             MainPanel.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            MainPanel.Size = new Size(1935, 947);
+            MainPanel.Size = new Size(1625, 1170);
             MainPanel.TabIndex = 0;
             // 
             // btnSearchHospital
@@ -115,10 +116,11 @@ namespace PatientsAccounting.Forms.AnalystsForms
             btnSearchHospital.FillColor = Color.FromArgb(0, 122, 204);
             btnSearchHospital.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnSearchHospital.ForeColor = Color.White;
-            btnSearchHospital.Location = new Point(573, 180);
+            btnSearchHospital.Location = new Point(981, 303);
+            btnSearchHospital.Margin = new Padding(4);
             btnSearchHospital.Name = "btnSearchHospital";
             btnSearchHospital.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            btnSearchHospital.Size = new Size(83, 36);
+            btnSearchHospital.Size = new Size(104, 45);
             btnSearchHospital.TabIndex = 19;
             btnSearchHospital.Text = "Найти";
             btnSearchHospital.Click += btnSearchHospital_Click;
@@ -138,13 +140,13 @@ namespace PatientsAccounting.Forms.AnalystsForms
             txtHospitalSearch.Font = new Font("Segoe UI", 10F);
             txtHospitalSearch.ForeColor = Color.White;
             txtHospitalSearch.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
-            txtHospitalSearch.Location = new Point(329, 180);
-            txtHospitalSearch.Margin = new Padding(3, 5, 3, 5);
+            txtHospitalSearch.Location = new Point(536, 303);
+            txtHospitalSearch.Margin = new Padding(4, 6, 4, 6);
             txtHospitalSearch.Name = "txtHospitalSearch";
             txtHospitalSearch.PlaceholderText = "Начните вводить название поликлиники...";
             txtHospitalSearch.SelectedText = "";
             txtHospitalSearch.ShadowDecoration.CustomizableEdges = customizableEdges4;
-            txtHospitalSearch.Size = new Size(238, 36);
+            txtHospitalSearch.Size = new Size(420, 45);
             txtHospitalSearch.TabIndex = 18;
             txtHospitalSearch.KeyPress += txtHospitalSearch_KeyPress;
             // 
@@ -153,9 +155,10 @@ namespace PatientsAccounting.Forms.AnalystsForms
             lblEndDate.AutoSize = true;
             lblEndDate.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblEndDate.ForeColor = Color.White;
-            lblEndDate.Location = new Point(750, 240);
+            lblEndDate.Location = new Point(862, 394);
+            lblEndDate.Margin = new Padding(4, 0, 4, 0);
             lblEndDate.Name = "lblEndDate";
-            lblEndDate.Size = new Size(79, 23);
+            lblEndDate.Size = new Size(94, 28);
             lblEndDate.TabIndex = 17;
             lblEndDate.Text = "Дата по:";
             lblEndDate.Visible = false;
@@ -165,9 +168,10 @@ namespace PatientsAccounting.Forms.AnalystsForms
             lblStartDate.AutoSize = true;
             lblStartDate.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblStartDate.ForeColor = Color.White;
-            lblStartDate.Location = new Point(500, 240);
+            lblStartDate.Location = new Point(520, 395);
+            lblStartDate.Margin = new Padding(4, 0, 4, 0);
             lblStartDate.Name = "lblStartDate";
-            lblStartDate.Size = new Size(67, 23);
+            lblStartDate.Size = new Size(80, 28);
             lblStartDate.TabIndex = 16;
             lblStartDate.Text = "Дата с:";
             lblStartDate.Visible = false;
@@ -175,18 +179,20 @@ namespace PatientsAccounting.Forms.AnalystsForms
             // dtpEndDate
             // 
             dtpEndDate.Format = DateTimePickerFormat.Short;
-            dtpEndDate.Location = new Point(850, 240);
+            dtpEndDate.Location = new Point(964, 392);
+            dtpEndDate.Margin = new Padding(4);
             dtpEndDate.Name = "dtpEndDate";
-            dtpEndDate.Size = new Size(150, 27);
+            dtpEndDate.Size = new Size(186, 31);
             dtpEndDate.TabIndex = 15;
             dtpEndDate.Visible = false;
             // 
             // dtpStartDate
             // 
             dtpStartDate.Format = DateTimePickerFormat.Short;
-            dtpStartDate.Location = new Point(580, 240);
+            dtpStartDate.Location = new Point(622, 393);
+            dtpStartDate.Margin = new Padding(4);
             dtpStartDate.Name = "dtpStartDate";
-            dtpStartDate.Size = new Size(150, 27);
+            dtpStartDate.Size = new Size(186, 31);
             dtpStartDate.TabIndex = 14;
             dtpStartDate.Visible = false;
             // 
@@ -204,10 +210,11 @@ namespace PatientsAccounting.Forms.AnalystsForms
             cmbDoctorFilter.Font = new Font("Segoe UI", 10F);
             cmbDoctorFilter.ForeColor = Color.White;
             cmbDoctorFilter.ItemHeight = 30;
-            cmbDoctorFilter.Location = new Point(1286, 180);
+            cmbDoctorFilter.Location = new Point(747, 225);
+            cmbDoctorFilter.Margin = new Padding(4);
             cmbDoctorFilter.Name = "cmbDoctorFilter";
             cmbDoctorFilter.ShadowDecoration.CustomizableEdges = customizableEdges6;
-            cmbDoctorFilter.Size = new Size(309, 36);
+            cmbDoctorFilter.Size = new Size(261, 36);
             cmbDoctorFilter.TabIndex = 13;
             cmbDoctorFilter.SelectedIndexChanged += cmbDoctorFilter_SelectedIndexChanged;
             // 
@@ -225,10 +232,11 @@ namespace PatientsAccounting.Forms.AnalystsForms
             cmbDepartmentFilter.Font = new Font("Segoe UI", 10F);
             cmbDepartmentFilter.ForeColor = Color.White;
             cmbDepartmentFilter.ItemHeight = 30;
-            cmbDepartmentFilter.Location = new Point(963, 180);
+            cmbDepartmentFilter.Location = new Point(1047, 225);
+            cmbDepartmentFilter.Margin = new Padding(4);
             cmbDepartmentFilter.Name = "cmbDepartmentFilter";
             cmbDepartmentFilter.ShadowDecoration.CustomizableEdges = customizableEdges8;
-            cmbDepartmentFilter.Size = new Size(298, 36);
+            cmbDepartmentFilter.Size = new Size(314, 36);
             cmbDepartmentFilter.TabIndex = 12;
             // 
             // cmbHospitalFilter
@@ -245,10 +253,11 @@ namespace PatientsAccounting.Forms.AnalystsForms
             cmbHospitalFilter.Font = new Font("Segoe UI", 10F);
             cmbHospitalFilter.ForeColor = Color.White;
             cmbHospitalFilter.ItemHeight = 30;
-            cmbHospitalFilter.Location = new Point(680, 180);
+            cmbHospitalFilter.Location = new Point(402, 225);
+            cmbHospitalFilter.Margin = new Padding(4);
             cmbHospitalFilter.Name = "cmbHospitalFilter";
             cmbHospitalFilter.ShadowDecoration.CustomizableEdges = customizableEdges10;
-            cmbHospitalFilter.Size = new Size(258, 36);
+            cmbHospitalFilter.Size = new Size(322, 36);
             cmbHospitalFilter.TabIndex = 11;
             cmbHospitalFilter.SelectedIndexChanged += cmbHospitalFilter_SelectedIndexChanged;
             // 
@@ -267,10 +276,11 @@ namespace PatientsAccounting.Forms.AnalystsForms
             cmbTimePeriod.ForeColor = Color.White;
             cmbTimePeriod.ItemHeight = 30;
             cmbTimePeriod.Items.AddRange(new object[] { "За последний месяц", "За последние 3 месяца", "За последние 6 месяцев", "За последний год", "За все время", "Произвольный период" });
-            cmbTimePeriod.Location = new Point(50, 180);
+            cmbTimePeriod.Location = new Point(62, 225);
+            cmbTimePeriod.Margin = new Padding(4);
             cmbTimePeriod.Name = "cmbTimePeriod";
             cmbTimePeriod.ShadowDecoration.CustomizableEdges = customizableEdges12;
-            cmbTimePeriod.Size = new Size(251, 36);
+            cmbTimePeriod.Size = new Size(271, 36);
             cmbTimePeriod.TabIndex = 10;
             cmbTimePeriod.SelectedIndexChanged += cmbTimePeriod_SelectedIndexChanged;
             // 
@@ -304,14 +314,15 @@ namespace PatientsAccounting.Forms.AnalystsForms
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
             dgvVisitsAnalysis.DefaultCellStyle = dataGridViewCellStyle3;
             dgvVisitsAnalysis.GridColor = Color.FromArgb(100, 100, 100);
-            dgvVisitsAnalysis.Location = new Point(50, 299);
+            dgvVisitsAnalysis.Location = new Point(76, 492);
+            dgvVisitsAnalysis.Margin = new Padding(4);
             dgvVisitsAnalysis.Name = "dgvVisitsAnalysis";
             dgvVisitsAnalysis.ReadOnly = true;
             dgvVisitsAnalysis.RowHeadersVisible = false;
             dgvVisitsAnalysis.RowHeadersWidth = 51;
             dgvVisitsAnalysis.RowTemplate.Height = 45;
             dgvVisitsAnalysis.ScrollBars = ScrollBars.Horizontal;
-            dgvVisitsAnalysis.Size = new Size(1437, 400);
+            dgvVisitsAnalysis.Size = new Size(1465, 510);
             dgvVisitsAnalysis.TabIndex = 9;
             dgvVisitsAnalysis.ThemeStyle.AlternatingRowsStyle.BackColor = Color.FromArgb(50, 50, 50);
             dgvVisitsAnalysis.ThemeStyle.AlternatingRowsStyle.Font = new Font("Segoe UI", 10F);
@@ -347,10 +358,11 @@ namespace PatientsAccounting.Forms.AnalystsForms
             btnRefresh.FillColor = Color.FromArgb(0, 122, 204);
             btnRefresh.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnRefresh.ForeColor = Color.White;
-            btnRefresh.Location = new Point(1622, 180);
+            btnRefresh.Location = new Point(2028, 225);
+            btnRefresh.Margin = new Padding(4);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            btnRefresh.Size = new Size(200, 36);
+            btnRefresh.Size = new Size(250, 45);
             btnRefresh.TabIndex = 8;
             btnRefresh.Text = "Обновить анализ";
             btnRefresh.Click += btnRefresh_Click;
@@ -360,9 +372,10 @@ namespace PatientsAccounting.Forms.AnalystsForms
             subtitleLabel.AutoSize = true;
             subtitleLabel.Font = new Font("Segoe UI", 14F);
             subtitleLabel.ForeColor = Color.White;
-            subtitleLabel.Location = new Point(400, 120);
+            subtitleLabel.Location = new Point(500, 150);
+            subtitleLabel.Margin = new Padding(4, 0, 4, 0);
             subtitleLabel.Name = "subtitleLabel";
-            subtitleLabel.Size = new Size(387, 32);
+            subtitleLabel.Size = new Size(447, 38);
             subtitleLabel.TabIndex = 7;
             subtitleLabel.Text = "Анализ посещаемости по врачам";
             subtitleLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -379,10 +392,11 @@ namespace PatientsAccounting.Forms.AnalystsForms
             btnBack.FillColor = Color.DimGray;
             btnBack.Font = new Font("Microsoft Sans Serif", 11F, FontStyle.Bold);
             btnBack.ForeColor = Color.White;
-            btnBack.Location = new Point(30, 30);
+            btnBack.Location = new Point(38, 38);
+            btnBack.Margin = new Padding(4);
             btnBack.Name = "btnBack";
             btnBack.ShadowDecoration.CustomizableEdges = customizableEdges16;
-            btnBack.Size = new Size(127, 53);
+            btnBack.Size = new Size(159, 66);
             btnBack.TabIndex = 6;
             btnBack.Text = "назад";
             btnBack.Click += btnBack_Click;
@@ -392,20 +406,22 @@ namespace PatientsAccounting.Forms.AnalystsForms
             TitleLabel.BackColor = Color.Transparent;
             TitleLabel.Font = new Font("Segoe UI Black", 28F, FontStyle.Bold);
             TitleLabel.ForeColor = Color.FromArgb(0, 122, 204);
-            TitleLabel.Location = new Point(350, 50);
+            TitleLabel.Location = new Point(438, 62);
+            TitleLabel.Margin = new Padding(4);
             TitleLabel.Name = "TitleLabel";
-            TitleLabel.Size = new Size(544, 64);
+            TitleLabel.Size = new Size(647, 76);
             TitleLabel.TabIndex = 5;
             TitleLabel.Text = "Анализ посещаемости";
             TitleLabel.TextAlignment = ContentAlignment.MiddleCenter;
             // 
             // VisitsAnalysisForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1935, 947);
+            ClientSize = new Size(1625, 1170);
             Controls.Add(MainPanel);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Margin = new Padding(4);
             Name = "VisitsAnalysisForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "HealthHub - Анализ посещаемости";

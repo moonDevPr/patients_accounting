@@ -39,20 +39,44 @@ namespace PatientsAccounting.Forms
 
         private void backButton_Click(object sender, EventArgs e)
         {
-            this.Close();
-
-            if ((CurrentUser.IsAuthenticated && CurrentUser.RoleName == "Пациент") || (!CurrentUser.IsAuthenticated))
+            if (CurrentUser.IsAuthenticated)
+            {
+                switch (CurrentUser.RoleName)
+                {
+                    case "Врач":
+                        DoctorsMenuForm doctorsMenu = new DoctorsMenuForm();
+                        doctorsMenu.Show();
+                        break;
+                    case "Аналитик":
+                        AnalystMenuForm analystMenuForm = new AnalystMenuForm();
+                        analystMenuForm.Show();
+                        break;
+                    case "Пациент":
+                        PatientsMenu patientsMenu = new PatientsMenu();
+                        patientsMenu.Show();
+                        break;
+                    default:
+                        PatientsMenu defaultMenu = new PatientsMenu();
+                        defaultMenu.Show();
+                        break;
+                }
+            }
+            else
             {
                 PatientsMenu patientsMenu = new PatientsMenu();
                 patientsMenu.Show();
             }
 
-            if ((CurrentUser.IsAuthenticated && CurrentUser.RoleName == "Врач"))
-            {
-                DoctorsMenuForm doctorsMenu = new DoctorsMenuForm();
-                doctorsMenu.Show();
-            }
+            this.Hide();
+        }
 
+        private void TitleLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainPanel_Paint(object sender, PaintEventArgs e)
+        {
 
         }
     }

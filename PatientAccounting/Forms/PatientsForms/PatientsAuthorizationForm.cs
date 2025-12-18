@@ -58,91 +58,71 @@ namespace PatientsAccounting.Forms
                         CurrentUser.RoleId = authUser.id_users_role.Value;
                     }
 
-                    var currentPatient = Patient.GetPatientByUsername(username);
-                    var currentDoctor = Doctor.GetDoctorByUsername(username);
-
-                    if (currentDoctor != null)
+                    string? roleName = null;
+                    using (var context = new ApplicationDbContext())
                     {
-                        var (doctor, credentials, role) = currentDoctor.Value;
-
-                        // Сохранение данных врача:
-                        CurrentUser.DoctorId = doctor.id;
-                        CurrentUser.DoctorFullName = $"{doctor.surname} {doctor.name} {doctor.patronymic}";
-                        CurrentUser.RoleName = role.role_name;
-
-                        MessageBox.Show($"Добро пожаловать, {doctor.surname} {doctor.name} {doctor.patronymic}!");
-                        DoctorsMenuForm form = new DoctorsMenuForm();
-                        this.Close();
-                        form.Show();
-
-                        return;
+                        if (authUser.id_users_role.HasValue)
+                        {
+                            roleName = context.UsersRoles
+                                .Where(r => r.id == authUser.id_users_role.Value)
+                                .Select(r => r.role_name)
+                                .FirstOrDefault();
+                        }
                     }
+                    CurrentUser.RoleName = roleName;
 
+                    var currentPatient = Patient.GetPatientByUsername(username);
                     if (currentPatient != null)
                     {
                         // Это пациент
                         var (patient, credentials, role) = currentPatient.Value;
                         CurrentUser.PatientId = patient.id;
-                        CurrentUser.RoleName = role.role_name;
 
                         MessageBox.Show($"Добро пожаловать, {patient.surname} {patient.name} {patient.patronymic}!");
 
-                        if (role.role_name == "Пациент")
+                        PatientsMenu menu = new PatientsMenu();
+                        menu.Show();
+                        this.Hide();
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(roleName))
+                    {
+                        switch (roleName)
                         {
-                            PatientsMenu menu = new PatientsMenu();
-                            menu.Show();
-                            this.Close();
+                            case "Врач":
+                                var currentDoctor = Doctor.GetDoctorByUsername(username);
+                                if (currentDoctor != null)
+                                {
+                                    var (doctor, credentials, role) = currentDoctor.Value;
+                                    MessageBox.Show($"Добро пожаловать, {doctor.surname} {doctor.name} {doctor.patronymic}!");
+                                }
+                                else
+                                {
+                                    MessageBox.Show($"Добро пожаловать, врач {username}!");
+                                }
+
+                                DoctorsMenuForm form = new DoctorsMenuForm();
+                                form.Show();
+                                this.Hide();
+                                break;
+
+                            case "Аналитик":
+                                MessageBox.Show($"Добро пожаловать, аналитик {username}!");
+                                AnalystMenuForm analystMenu = new AnalystMenuForm();
+                                analystMenu.Show();
+                                this.Hide();
+                                break;
+
+                            default:
+                                MessageBox.Show($"Добро пожаловать, сотрудник {username}! Роль: {roleName}");
+                                MessageBox.Show("Для вашей роли еще нет специальной формы");
+                                break;
                         }
                     }
                     else
                     {
-                        UsersRole? employeeRole = null;
-                        using (var context = new ApplicationDbContext())
-                        {
-                            if (authUser.id_users_role.HasValue)
-                            {
-                                employeeRole = context.UsersRoles
-                                    .FirstOrDefault(r => r.id == authUser.id_users_role.Value);
-                            }
-                        }
-
-                        if (employeeRole != null)
-                        {
-                            CurrentUser.RoleName = employeeRole.role_name;
-
-                            // Проверяем роль сотрудника и открываем соответствующую форму
-                            if (employeeRole.role_name == "Аналитик")
-                            {
-                                MessageBox.Show($"Добро пожаловать, аналитик {username}!");
-                                AnalystMenuForm analystMenu = new AnalystMenuForm();
-                                analystMenu.Show();
-                                this.Close();
-                            }
-                            else if (employeeRole.role_name == "Врач")
-                            {
-                                MessageBox.Show($"Добро пожаловать, врач {username}!");
-                                // ТОЛЬКО для врачей, которые не попали в метод GetDoctorByUsername
-                                // Например, если врач есть в UsersCredentials но нет в таблице Doctors
-                                DoctorsMenuForm form = new DoctorsMenuForm();
-                                this.Close();
-                                form.Show();
-                            }
-                            else if (employeeRole.role_name == "Главный врач")
-                            {
-                                MessageBox.Show($"Добро пожаловать, администратор {username}!");
-                                // TODO: Добавить административную панель
-                                MessageBox.Show("Административная панель в разработке");
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Добро пожаловать, сотрудник {username}! Роль: {employeeRole.role_name}");
-                                MessageBox.Show("Для вашей роли еще нет специальной формы");
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Ошибка: не удалось определить роль сотрудника");
-                        }
+                        MessageBox.Show("Ошибка: не удалось определить роль пользователя");
                     }
                 }
                 else
@@ -155,7 +135,6 @@ namespace PatientsAccounting.Forms
                 MessageBox.Show($"Ошибка авторизации: {ex.Message}");
             }
         }
-
         private static UsersCredentials? CheckUserCredentials(string username, string password)
         {
             using (var context = new ApplicationDbContext())
@@ -193,5 +172,8 @@ namespace PatientsAccounting.Forms
         {
 
         }
+
+
     }
+
 }
