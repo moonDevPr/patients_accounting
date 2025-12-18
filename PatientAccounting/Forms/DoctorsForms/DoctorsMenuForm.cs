@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using PatientAccounting;
 using PatientAccounting.Forms.PatientsForms.MenuForms;
 using PatientsAccounting.Forms;
 using PatientsAccounting.Models;
@@ -17,6 +18,8 @@ namespace PatientsAccounting.Forms
         {
             InitializeComponent();
 
+           
+
             if (AuthBtn != null && logoutBtn != null)
             {
                 AuthBtn.Visible = !CurrentUser.IsAuthenticated;
@@ -24,7 +27,31 @@ namespace PatientsAccounting.Forms
             }
         }
 
-        private void OpenChildForm(Form childForm)
+
+
+        private void PatientSearchBtn_Click(object sender, EventArgs e)
+        {
+            OpenPatientSearchForm();
+        }
+
+        private void OpenPatientSearchForm()
+        {
+            try
+            {
+                // Создаем экземпляр формы PatientSearch
+                PatientSearch patientSearchForm = new PatientSearch();
+
+                // Открываем форму в panelDesktop
+                OpenChildForm(patientSearchForm);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии формы поиска пациентов: {ex.Message}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public void OpenChildForm(Form childForm)
         {
             if (currentChildForm != null)
             {
@@ -79,15 +106,38 @@ namespace PatientsAccounting.Forms
         {
             DoctorsRegistrationForm doctorsRegistration = new DoctorsRegistrationForm();
             doctorsRegistration.Show();
-
-
         }
 
+        // ИЗМЕНИТЕ этот метод - вместо расписания открывайте поиск пациента
         private void HistoryBtn_Click(object sender, EventArgs e)
         {
-            DoctorScheduleForm scheduleForm = new DoctorScheduleForm();
-            OpenChildForm(scheduleForm);
+           
+            try
+            {
+                // Проверяем авторизацию врача
+                if (!CurrentUser.IsAuthenticated || !CurrentUser.DoctorId.HasValue || CurrentUser.DoctorId <= 0)
+                {
+                    MessageBox.Show("Врач не авторизован",
+                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Создаем экземпляр формы PatientSearch
+                PatientSearch patientSearchForm = new PatientSearch();
+
+                // Открываем форму в panelDesktop
+                OpenChildForm(patientSearchForm);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии формы поиска пациентов: {ex.Message}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
+        
+
+
 
         private void MakeVisitBtn_Click(object sender, EventArgs e)
         {

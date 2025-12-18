@@ -14,6 +14,9 @@ namespace PatientsAcounting.Services
         public static int? PatientId { get; set; }
         public static string RoleName { get; set; }
 
+        public static int? DoctorId { get; set; }
+        public static string DoctorFullName { get; set; } = string.Empty;
+
         public static bool IsAuthenticated => UserId > 0;
 
         public static void Clear()
@@ -22,6 +25,13 @@ namespace PatientsAcounting.Services
             Username = string.Empty;
             RoleId = 0;
             PatientId = null;
+
+
+            DoctorId = null;
+            DoctorFullName = string.Empty;
+            RoleName = string.Empty;
         }
+
+       
     }
 }

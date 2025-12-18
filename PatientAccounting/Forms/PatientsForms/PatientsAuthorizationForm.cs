@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PatientsAccounting.Models;
 using PatientsAccounting.Services;
 using PatientsAcounting.Services;
@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static PatientsAcounting.Services.CurrentUser;
 
 namespace PatientsAccounting.Forms
 {
