@@ -17,11 +17,11 @@ namespace PatientsAccounting.Models
                 var envPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".env");
                 DotNetEnv.Env.Load(envPath);
                 
-                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "dbHost");
-                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "port");
-                var dbName = DotNetEnv.Env.GetString("DB_NAME", "dbname");
-                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "username");
-                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "password");
+                var dbHost = DotNetEnv.Env.GetString("DB_HOST", "localhost");
+                var dbPort = DotNetEnv.Env.GetString("DB_PORT", "5432");
+                var dbName = DotNetEnv.Env.GetString("DB_NAME", "new");
+                var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "postgres");
+                var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "Ltyecz2007");
                 var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUsername};Password={dbPassword}";
 
                 optionsBuilder.UseNpgsql(connectionString);

@@ -39,6 +39,8 @@ namespace PatientsAccounting.Forms
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges10 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges11 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges12 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
+            Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges17 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges18 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges15 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -54,6 +56,7 @@ namespace PatientsAccounting.Forms
             panelDesktop = new Panel();
             AuthBtn = new Guna2Button();
             guna2HtmlLabel1 = new Guna2HtmlLabel();
+            guna2Button1 = new Guna2Button();
             leftMenuPanel.SuspendLayout();
             contentPanel.SuspendLayout();
             SuspendLayout();
@@ -246,14 +249,15 @@ namespace PatientsAccounting.Forms
             // contentPanel
             // 
             contentPanel.BackColor = Color.FromArgb(45, 45, 45);
+            contentPanel.Controls.Add(guna2Button1);
             contentPanel.Controls.Add(panelDesktop);
             contentPanel.Controls.Add(AuthBtn);
             contentPanel.Controls.Add(guna2HtmlLabel1);
-            contentPanel.CustomizableEdges = customizableEdges17;
+            contentPanel.CustomizableEdges = customizableEdges19;
             contentPanel.Dock = DockStyle.Fill;
             contentPanel.Location = new Point(250, 0);
             contentPanel.Name = "contentPanel";
-            contentPanel.ShadowDecoration.CustomizableEdges = customizableEdges18;
+            contentPanel.ShadowDecoration.CustomizableEdges = customizableEdges20;
             contentPanel.Size = new Size(1055, 848);
             contentPanel.TabIndex = 2;
             // 
@@ -267,7 +271,7 @@ namespace PatientsAccounting.Forms
             // AuthBtn
             // 
             AuthBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            AuthBtn.CustomizableEdges = customizableEdges15;
+            AuthBtn.CustomizableEdges = customizableEdges17;
             AuthBtn.DisabledState.BorderColor = Color.DarkGray;
             AuthBtn.DisabledState.CustomBorderColor = Color.DarkGray;
             AuthBtn.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
@@ -277,7 +281,7 @@ namespace PatientsAccounting.Forms
             AuthBtn.ForeColor = Color.White;
             AuthBtn.Location = new Point(819, 21);
             AuthBtn.Name = "AuthBtn";
-            AuthBtn.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            AuthBtn.ShadowDecoration.CustomizableEdges = customizableEdges18;
             AuthBtn.Size = new Size(214, 57);
             AuthBtn.TabIndex = 31;
             AuthBtn.Text = "Войти";
@@ -296,6 +300,25 @@ namespace PatientsAccounting.Forms
             guna2HtmlLabel1.Text = "HealthHub";
             guna2HtmlLabel1.TextAlignment = ContentAlignment.MiddleCenter;
             // 
+            // guna2Button1
+            // 
+            guna2Button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            guna2Button1.CustomizableEdges = customizableEdges15;
+            guna2Button1.DisabledState.BorderColor = Color.DarkGray;
+            guna2Button1.DisabledState.CustomBorderColor = Color.DarkGray;
+            guna2Button1.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            guna2Button1.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            guna2Button1.FillColor = Color.FromArgb(64, 64, 64);
+            guna2Button1.Font = new Font("Segoe UI", 11F);
+            guna2Button1.ForeColor = Color.White;
+            guna2Button1.Location = new Point(548, 21);
+            guna2Button1.Name = "guna2Button1";
+            guna2Button1.ShadowDecoration.CustomizableEdges = customizableEdges16;
+            guna2Button1.Size = new Size(214, 57);
+            guna2Button1.TabIndex = 32;
+            guna2Button1.Text = "Загрузить данные";
+            guna2Button1.Click += btnSeedDatabase_Click;
+            // 
             // PatientsMenu
             // 
             ClientSize = new Size(1305, 848);
@@ -305,6 +328,7 @@ namespace PatientsAccounting.Forms
             Name = "PatientsMenu";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "HealthHub - Панель пациента";
+            Load += PatientsMenu_Load;
             leftMenuPanel.ResumeLayout(false);
             contentPanel.ResumeLayout(false);
             contentPanel.PerformLayout();
@@ -314,5 +338,6 @@ namespace PatientsAccounting.Forms
         private Guna2Button AuthBtn;
         private Guna2Button HospitalsBtn;
         private Panel panelDesktop;
+        private Guna2Button guna2Button1;
     }
 }

@@ -3,6 +3,7 @@
 using Guna.UI2.WinForms;
 using Microsoft.EntityFrameworkCore;
 using PatientsAccounting.Models;
+using PatientsAccounting.Services;
 using PatientsAcounting.Models;
 using PatientsAcounting.Services;
 using System;
@@ -250,7 +251,7 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
             );
         }
 
-       
+
 
         private void Calendar_DateChanged(object sender, DateRangeEventArgs e)
         {
@@ -337,33 +338,60 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
             {
                 using var db = new ApplicationDbContext();
 
-                var doctors = db.HospitalDepartments
-                    .Where(hd => hd.id_hospital == hospitalId && hd.id_department == departmentId)
-                    .Join(db.DepartmentPositions,
-                          hd => hd.id,
-                          dp => dp.id_hospital_department,
-                          (hd, dp) => dp)
-                    .Join(db.DoctorPositions,
-                          dp => dp.id_position_doctor,
-                          dpos => dpos.id,
-                          (dp, dpos) => dpos)
-                    .Join(db.Doctors,
-                          dpos => dpos.id_doctor,
-                          d => d.id,
-                          (dpos, d) => d)
-                    .Distinct()
-                    .ToList();
+                // Используем LINQ Join без навигационных свойств
+                var doctors = (from hd in db.HospitalDepartments
+                               where hd.id_hospital == hospitalId && hd.id_department == departmentId
+                               join dp in db.DepartmentPositions on hd.id equals dp.id_hospital_department
+                               join dpos in db.DoctorPositions on dp.id_position_doctor equals dpos.id
+                               join doc in db.Doctors on dpos.id_doctor equals doc.id
+                               select doc)
+                             .Distinct()
+                             .ToList();
 
-                if (doctorComboBox != null)
+                Console.WriteLine($"Найдено врачей через JOIN: {doctors.Count}");
+
+                // Если не найдено через связи, загружаем всех врачей
+                if (doctors.Count == 0)
                 {
-                    doctorComboBox.DisplayMember = "surname";
-                    doctorComboBox.ValueMember = "id";
-                    doctorComboBox.DataSource = doctors;
+                    Console.WriteLine("Загружаем всех врачей...");
+                    doctors = db.Doctors.ToList();
 
-                    if (doctors.Count > 0)
+                    if (doctors.Count == 0)
                     {
-                        doctorComboBox.SelectedIndex = 0;
+                        MessageBox.Show("В базе данных нет врачей!",
+                            "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
                     }
+                }
+
+                // Заполняем ComboBox
+                doctorComboBox.Items.Clear();
+                doctorComboBox.Enabled = true;
+
+                foreach (var doctor in doctors)
+                {
+                    string displayText = $"{doctor.surname} {doctor.name}";
+                    if (!string.IsNullOrWhiteSpace(doctor.patronymic))
+                    {
+                        displayText += $" {doctor.patronymic}";
+                    }
+
+                    var item = new
+                    {
+                        Id = doctor.id,
+                        DisplayText = displayText,
+                        Doctor = doctor
+                    };
+
+                    doctorComboBox.Items.Add(item);
+                }
+
+                doctorComboBox.DisplayMember = "DisplayText";
+                doctorComboBox.ValueMember = "Id";
+
+                if (doctors.Count > 0)
+                {
+                    doctorComboBox.SelectedIndex = 0;
                 }
             }
             catch (Exception ex)
@@ -372,11 +400,194 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
             }
         }
 
+        // Вспомогательный класс для элементов ComboBox
+        public class ComboBoxDoctorItem
+        {
+            public Doctors Doctor { get; set; }
+            public string DisplayText { get; set; }
+
+            public override string ToString()
+            {
+                return DisplayText;
+            }
+        }
+
+        // Метод для полной диагностики всех связей в базе
+        private void DebugAllDatabaseConnections(ApplicationDbContext db)
+        {
+            try
+            {
+                Console.WriteLine("\n=== ПОЛНАЯ ДИАГНОСТИКА БАЗЫ ДАННЫХ ===");
+
+                // 1. Все врачи
+                var allDoctors = db.Doctors.ToList();
+                Console.WriteLine($"Всего врачей в системе: {allDoctors.Count}");
+                foreach (var doc in allDoctors)
+                {
+                    Console.WriteLine($"  Врач ID={doc.id}: {doc.surname} {doc.name}");
+                }
+
+                // 2. Все DoctorPositions
+                var allDoctorPositions = db.DoctorPositions.ToList();
+                Console.WriteLine($"\nВсего DoctorPositions: {allDoctorPositions.Count}");
+                foreach (var dp in allDoctorPositions)
+                {
+                    Console.WriteLine($"  DoctorPosition ID={dp.id}: Doctor ID={dp.id_doctor}, Position ID={dp.id_position}");
+                }
+
+                // 3. Все DepartmentPositions
+                var allDepartmentPositions = db.DepartmentPositions.ToList();
+                Console.WriteLine($"\nВсего DepartmentPositions: {allDepartmentPositions.Count}");
+                foreach (var dpp in allDepartmentPositions)
+                {
+                    Console.WriteLine($"  DepartmentPosition ID={dpp.id}: HospitalDepartment ID={dpp.id_hospital_department}, DoctorPosition ID={dpp.id_position_doctor}");
+                }
+
+                // 4. Все HospitalDepartments
+                var allHospitalDepts = db.HospitalDepartments.ToList();
+                Console.WriteLine($"\nВсего HospitalDepartments: {allHospitalDepts.Count}");
+                foreach (var hd in allHospitalDepts)
+                {
+                    Console.WriteLine($"  HospitalDepartment ID={hd.id}: Hospital ID={hd.id_hospital}, Department ID={hd.id_department}");
+                }
+
+                // 5. Проверяем цепочку для всех HospitalDepartments
+                Console.WriteLine("\n=== ПРОВЕРКА ВСЕХ СВЯЗЕЙ ===");
+                foreach (var hd in allHospitalDepts)
+                {
+                    var depPositions = db.DepartmentPositions
+                        .Where(dp => dp.id_hospital_department == hd.id)
+                        .ToList();
+
+                    Console.WriteLine($"\nДля HospitalDepartment ID={hd.id} (Hospital={hd.id_hospital}, Dept={hd.id_department}):");
+                    Console.WriteLine($"  Найдено DepartmentPositions: {depPositions.Count}");
+
+                    foreach (var dp in depPositions)
+                    {
+                        var docPos = db.DoctorPositions.FirstOrDefault(d => d.id == dp.id_position_doctor);
+                        if (docPos != null)
+                        {
+                            var doctor = db.Doctors.FirstOrDefault(d => d.id == docPos.id_doctor);
+                            Console.WriteLine($"    DepartmentPosition ID={dp.id} -> DoctorPosition ID={docPos.id} -> Врач: {(doctor != null ? $"{doctor.surname} {doctor.name}" : "НЕ НАЙДЕН")}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"    DepartmentPosition ID={dp.id} -> DoctorPosition НЕ НАЙДЕН");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при диагностике: {ex.Message}");
+            }
+        }
+
+        // Метод для отладки цепочки связей (добавьте его в класс)
+        private void CheckDoctorChain(ApplicationDbContext db, int hospitalId, int departmentId)
+        {
+            try
+            {
+                Console.WriteLine("=== ОТЛАДКА ЦЕПОЧКИ СВЯЗЕЙ ===");
+
+                // 1. Проверяем HospitalDepartments
+                var hospitalDepts = db.HospitalDepartments
+                    .Where(hd => hd.id_hospital == hospitalId && hd.id_department == departmentId)
+                    .ToList();
+
+                Console.WriteLine($"1. HospitalDepartments найдено: {hospitalDepts.Count}");
+                foreach (var hd in hospitalDepts)
+                {
+                    Console.WriteLine($"   ID: {hd.id}, HospitalId: {hd.id_hospital}, DepartmentId: {hd.id_department}");
+                }
+
+                if (hospitalDepts.Count == 0)
+                {
+                    MessageBox.Show("Выбранное отделение не существует в этой больнице!",
+                        "Ошибка данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 2. Проверяем DepartmentPositions
+                foreach (var hd in hospitalDepts)
+                {
+                    var depPositions = db.DepartmentPositions
+                        .Where(dp => dp.id_hospital_department == hd.id)
+                        .ToList();
+
+                    Console.WriteLine($"2. Для HospitalDepartment ID={hd.id} найдено DepartmentPositions: {depPositions.Count}");
+
+                    if (depPositions.Count == 0)
+                    {
+                        Console.WriteLine("   ВНИМАНИЕ: Нет должностей в этом отделении!");
+                        MessageBox.Show("В выбранном отделении нет назначенных должностей!",
+                            "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    // 3. Проверяем DoctorPositions
+                    foreach (var dp in depPositions)
+                    {
+                        Console.WriteLine($"   DepartmentPosition ID={dp.id}, ссылается на DoctorPosition ID={dp.id_position_doctor}");
+
+                        var docPosition = db.DoctorPositions
+                            .FirstOrDefault(dpos => dpos.id == dp.id_position_doctor);
+
+                        if (docPosition != null)
+                        {
+                            Console.WriteLine($"   3. DoctorPosition ID={docPosition.id} найден, ссылается на Doctor ID={docPosition.id_doctor}");
+
+                            // 4. Проверяем Doctors
+                            var doctor = db.Doctors
+                                .FirstOrDefault(d => d.id == docPosition.id_doctor);
+
+                            if (doctor != null)
+                            {
+                                Console.WriteLine($"   4. Врач найден: {doctor.surname} {doctor.name} (ID: {doctor.id})");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"   4. ВНИМАНИЕ: Врач с ID {docPosition.id_doctor} не найден!");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"   3. ВНИМАНИЕ: DoctorPosition с ID {dp.id_position_doctor} не найден!");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при отладке: {ex.Message}");
+            }
+        }
+
+
+        private void ShowNoDoctorsMessage()
+        {
+            var label = new Label
+            {
+                Text = "В выбранном отделении нет врачей",
+                ForeColor = Color.Orange,
+                Font = new Font("Segoe UI", 10),
+                AutoSize = true
+            };
+
+            // Можно добавить сообщение на форму или в лог
+            Console.WriteLine("В выбранном отделении нет врачей");
+        }
+
         private void DoctorComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Убедитесь, что в методе LoadDoctors вы правильно сохраняете объект врача
+            // Например, в методе LoadDoctors используйте такой подход:
+            // doctorComboBox.Items.Add(new { Doctor = doctor, DisplayText = displayText });
+
             LoadSchedule();
         }
 
+        // Обновите LoadSchedule:
         private void LoadSchedule()
         {
             timeSlotsPanel.Controls.Clear();
@@ -391,10 +602,16 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
             {
                 using var db = new ApplicationDbContext();
 
-                var selectedDoctor = (Doctors)doctorComboBox.SelectedItem;
+                // Получаем врача из выбранного элемента
+                dynamic selectedItem = doctorComboBox.SelectedItem;
+                var selectedDoctor = (Doctors)selectedItem.Doctor; // Теперь объект врача доступен через свойство Doctor
+
                 var selectedHospital = (Hospitals)hospitalComboBox.SelectedItem;
                 var selectedDate = calendar?.SelectionStart ?? DateTime.Today;
                 var dayOfWeekRus = GetRussianDayOfWeek(selectedDate.DayOfWeek).ToLower();
+
+                Console.WriteLine($"Загрузка расписания для врача: {selectedDoctor.surname} {selectedDoctor.name}, " +
+                                 $"Больница: {selectedHospital.name}, Дата: {selectedDate:dd.MM.yyyy}, День: {dayOfWeekRus}");
 
                 // 1. Находим расписание врача на этот день
                 var doctorSchedule = GetDoctorSchedule(db, selectedDoctor.id, selectedHospital.id, dayOfWeekRus);
@@ -413,7 +630,9 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки расписания: {ex.Message}");
+                MessageBox.Show($"Ошибка загрузки расписания: {ex.Message}\n\nПодробности в консоли",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine($"Ошибка в LoadSchedule: {ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -422,33 +641,93 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
         {
             try
             {
-                // Находим связь врача с отделением
-                var departmentPositionId = db.HospitalDepartments
-                    .Where(hd => hd.id_hospital == hospitalId)
-                    .Join(db.DepartmentPositions,
-                          hd => hd.id,
-                          dp => dp.id_hospital_department,
-                          (hd, dp) => dp)
-                    .Join(db.DoctorPositions,
-                          dp => dp.id_position_doctor,
-                          dpos => dpos.id,
-                          (dp, dpos) => new { DepartmentPosition = dp, DoctorPosition = dpos })
-                    .Where(x => x.DoctorPosition.id_doctor == doctorId)
-                    .Select(x => x.DepartmentPosition.id)
-                    .FirstOrDefault();
+                Console.WriteLine($"\n=== ПОИСК РАСПИСАНИЯ ===");
+                Console.WriteLine($"Doctor ID: {doctorId}, Hospital ID: {hospitalId}, Day: {dayOfWeek}");
 
-                if (departmentPositionId == 0)
+                // Получаем имя дня недели на русском
+                var russianDayName = GetRussianDayOfWeek(calendar.SelectionStart.DayOfWeek).ToLower();
+                Console.WriteLine($"Русское название дня: {russianDayName}");
+
+                // 1. Находим HospitalDepartment для выбранной больницы и отделения
+                if (departmentComboBox.SelectedItem == null)
+                {
+                    Console.WriteLine("Отделение не выбрано!");
                     return null;
+                }
 
-                // Ищем расписание с AsNoTracking
-                return db.DoctorWorkingHours
-                    .AsNoTracking()
-                    .FirstOrDefault(dwh => dwh.day_of_week.ToLower() == dayOfWeek &&
-                                         dwh.id_department_position == departmentPositionId);
+                var selectedDepartment = (Department)departmentComboBox.SelectedItem;
+
+                var hospitalDept = db.HospitalDepartments
+                    .FirstOrDefault(hd => hd.id_hospital == hospitalId &&
+                                         hd.id_department == selectedDepartment.id);
+
+                if (hospitalDept == null)
+                {
+                    Console.WriteLine($"HospitalDepartment не найден: Hospital={hospitalId}, Department={selectedDepartment.id}");
+                    return null;
+                }
+
+                Console.WriteLine($"Найден HospitalDepartment ID: {hospitalDept.id}");
+
+                // 2. Находим DepartmentPosition для этого врача в этом отделении
+                // Сначала находим все DoctorPositions этого врача
+                var doctorPositions = db.DoctorPositions
+                    .Where(dp => dp.id_doctor == doctorId)
+                    .Select(dp => dp.id)
+                    .ToList();
+
+                if (doctorPositions.Count == 0)
+                {
+                    Console.WriteLine($"У врача ID={doctorId} нет DoctorPositions");
+                    return null;
+                }
+
+                // Находим DepartmentPosition, который ссылается на DoctorPosition этого врача
+                // И принадлежит указанному HospitalDepartment
+                var departmentPosition = db.DepartmentPositions
+                    .FirstOrDefault(dp => dp.id_hospital_department == hospitalDept.id &&
+                                         doctorPositions.Contains(dp.id_position_doctor));
+
+                if (departmentPosition == null)
+                {
+                    Console.WriteLine($"DepartmentPosition не найден для врача ID={doctorId} в HospitalDepartment ID={hospitalDept.id}");
+                    return null;
+                }
+
+                Console.WriteLine($"Найден DepartmentPosition ID: {departmentPosition.id}");
+
+                // 3. Ищем расписание для этого DepartmentPosition
+                var schedule = db.DoctorWorkingHours
+                    .FirstOrDefault(dwh => dwh.day_of_week.ToLower() == russianDayName &&
+                                          dwh.id_department_position == departmentPosition.id);
+
+                if (schedule != null)
+                {
+                    Console.WriteLine($"✓ Расписание найдено: ID={schedule.id}, " +
+                                    $"{schedule.start_time:HH:mm}-{schedule.end_time:HH:mm}, " +
+                                    $"Длительность: {schedule.duration_appointment} мин");
+                }
+                else
+                {
+                    Console.WriteLine($"✗ Расписание не найдено для дня недели: {russianDayName}");
+
+                    // Для отладки: выведем все расписания для этого DepartmentPosition
+                    var allSchedules = db.DoctorWorkingHours
+                        .Where(dwh => dwh.id_department_position == departmentPosition.id)
+                        .ToList();
+
+                    Console.WriteLine($"Всего расписаний для DepartmentPosition {departmentPosition.id}: {allSchedules.Count}");
+                    foreach (var s in allSchedules)
+                    {
+                        Console.WriteLine($"  День: {s.day_of_week}, Время: {s.start_time:HH:mm}-{s.end_time:HH:mm}");
+                    }
+                }
+
+                return schedule;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка в GetDoctorSchedule: {ex.Message}");
+                Console.WriteLine($"Ошибка в GetDoctorSchedule: {ex.Message}\n{ex.StackTrace}");
                 return null;
             }
         }
@@ -617,7 +896,7 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
         }
 
         private void BookAppointment(Doctors doctor, Hospitals hospital,
-     DateTime appointmentDateTime, int workingHoursId)
+    DateTime appointmentDateTime, int workingHoursId)
         {
             try
             {
@@ -652,6 +931,38 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
 
                 using (var db = new ApplicationDbContext())
                 {
+                    // 1. Проверяем, что все необходимые данные существуют
+                    Console.WriteLine("\n=== ПРОВЕРКА ДАННЫХ ДЛЯ ЗАПИСИ ===");
+                    Console.WriteLine($"WorkingHours ID: {workingHoursId}");
+                    Console.WriteLine($"Card ID: {cardId.Value}");
+                    Console.WriteLine($"Appointment DateTime: {appointmentDateTime}");
+                    Console.WriteLine($"Current User PatientId: {CurrentUser.PatientId}");
+
+                    // Проверяем существование записи в doctor_schedule
+                    var schedule = db.DoctorWorkingHours
+                        .FirstOrDefault(dwh => dwh.id == workingHoursId);
+
+                    if (schedule == null)
+                    {
+                        MessageBox.Show("Расписание врача не найдено!",
+                            "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    Console.WriteLine($"✓ Расписание найдено: ID={schedule.id}");
+
+                    // Проверяем карту пациента
+                    var patientCard = db.PatientCards
+                        .FirstOrDefault(pc => pc.id == cardId.Value);
+
+                    if (patientCard == null)
+                    {
+                        MessageBox.Show("Медицинская карта не найдена!",
+                            "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    Console.WriteLine($"✓ Карта пациента найдена: ID={patientCard.id}");
+
+                    // 2. Проверяем, не занято ли это время
                     var normalizedAppointmentDateTime = DateTime.SpecifyKind(
                         appointmentDateTime,
                         DateTimeKind.Utc
@@ -659,8 +970,8 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
 
                     var existingVisit = db.PatientVisits
                         .FirstOrDefault(v => v.id_doctor_working_hours == workingHoursId &&
-                                            v.appointment_date.Date == normalizedAppointmentDateTime.Date &&
-                                            v.appointment_date.TimeOfDay == normalizedAppointmentDateTime.TimeOfDay);
+                                           v.appointment_date.Date == normalizedAppointmentDateTime.Date &&
+                                           v.appointment_date.TimeOfDay == normalizedAppointmentDateTime.TimeOfDay);
 
                     if (existingVisit != null)
                     {
@@ -669,6 +980,38 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
                         return;
                     }
 
+                    // 3. Получаем ID для обязательных полей
+                    // Ищем первый доступный тип визита
+                    var visitType = db.VisitTypes.FirstOrDefault();
+                    if (visitType == null)
+                    {
+                        // Создаем тестовый тип визита если его нет
+                        visitType = new VisitTypes { title = "Первичный прием" };
+                        db.VisitTypes.Add(visitType);
+                        db.SaveChanges();
+                    }
+
+                    // Ищем первый доступный тип записи
+                    var entryType = db.EntryTypes.FirstOrDefault();
+                    if (entryType == null)
+                    {
+                        entryType = new EntryType { title = "Запись через систему" };
+                        db.EntryTypes.Add(entryType);
+                        db.SaveChanges();
+                    }
+
+                    // Ищем первый доступный анализ
+                    var analysis = db.Analysis.FirstOrDefault();
+                    if (analysis == null)
+                    {
+                        analysis = new Analysis { type = "Общий анализ" };
+                        db.Analysis.Add(analysis);
+                        db.SaveChanges();
+                    }
+
+                    Console.WriteLine($"✓ Тип визита: {visitType.id}, Тип записи: {entryType.id}, Анализ: {analysis.id}");
+
+                    // 4. Создаем запись
                     var visit = new PatientVisits
                     {
                         document = $"Запись от {DateTime.Now:dd.MM.yyyy HH:mm}",
@@ -676,26 +1019,81 @@ namespace PatientAccounting.Forms.PatientsForms.MenuForms
                         adding_date = DateTime.UtcNow,
                         appointment_date = normalizedAppointmentDateTime,
                         id_doctor_working_hours = workingHoursId,
-                        id_visit_type = 1,
-                        id_analysis = 1,
-                        id_entry_type = 1,
+                        id_visit_type = visitType.id,
+                        id_analysis = analysis.id,
+                        id_entry_type = entryType.id,
                         id_card = cardId.Value
                     };
 
+                    // Выводим отладочную информацию
+                    Console.WriteLine("Создана запись PatientVisits:");
+                    Console.WriteLine($"  Document: {visit.document}");
+                    Console.WriteLine($"  Completed: {visit.completed}");
+                    Console.WriteLine($"  Adding Date: {visit.adding_date}");
+                    Console.WriteLine($"  Appointment Date: {visit.appointment_date}");
+                    Console.WriteLine($"  DoctorWorkingHours ID: {visit.id_doctor_working_hours}");
+                    Console.WriteLine($"  VisitType ID: {visit.id_visit_type}");
+                    Console.WriteLine($"  Analysis ID: {visit.id_analysis}");
+                    Console.WriteLine($"  EntryType ID: {visit.id_entry_type}");
+                    Console.WriteLine($"  Card ID: {visit.id_card}");
+
                     db.PatientVisits.Add(visit);
-                    db.SaveChanges();
 
-                    MessageBox.Show("Запись успешно создана!",
-                        "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Сохраняем с детальной обработкой ошибок
+                    try
+                    {
+                        db.SaveChanges();
+                        MessageBox.Show("Запись успешно создана!",
+                            "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    LoadSchedule();
+                        LoadSchedule(); // Обновляем расписание
+                    }
+                    catch (DbUpdateException dbEx)
+                    {
+                        // Логируем все детали ошибки
+                        Console.WriteLine($"\n=== ОШИБКА СОХРАНЕНИЯ ===");
+                        Console.WriteLine($"Сообщение: {dbEx.Message}");
+
+                        if (dbEx.InnerException != null)
+                        {
+                            Console.WriteLine($"Внутреннее исключение: {dbEx.InnerException.Message}");
+                            Console.WriteLine($"Stack Trace: {dbEx.InnerException.StackTrace}");
+
+                            if (dbEx.InnerException.InnerException != null)
+                            {
+                                Console.WriteLine($"Вложенное исключение: {dbEx.InnerException.InnerException.Message}");
+                            }
+                        }
+
+                        // Проверяем конкретные ошибки PostgreSQL
+                        if (dbEx.InnerException is Npgsql.PostgresException pgEx)
+                        {
+                            Console.WriteLine($"\nPostgreSQL ошибка:");
+                            Console.WriteLine($"  Code: {pgEx.SqlState}");
+                            Console.WriteLine($"  Message: {pgEx.MessageText}");
+                            Console.WriteLine($"  Detail: {pgEx.Detail}");
+                            Console.WriteLine($"  Table: {pgEx.TableName}");
+                            Console.WriteLine($"  Column: {pgEx.ColumnName}");
+                            Console.WriteLine($"  Constraint: {pgEx.ConstraintName}");
+                        }
+
+                        MessageBox.Show($"Ошибка при создании записи:\n\n" +
+                                      $"Детали: {(dbEx.InnerException?.Message ?? dbEx.Message)}\n\n" +
+                                      $"Проверьте настройки базы данных.",
+                            "Ошибка сохранения", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при создании записи: {ex.Message}",
+                MessageBox.Show($"Ошибка при создании записи: {ex.Message}\n\n{ex.StackTrace}",
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void InitializeComponent()
+        {
+
         }
 
         private int? GetCurrentPatientCardId()
