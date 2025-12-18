@@ -22,7 +22,6 @@ namespace PatientsAccounting.Models
                 var dbName = DotNetEnv.Env.GetString("DB_NAME", "dbname");
                 var dbUsername = DotNetEnv.Env.GetString("DB_USERNAME", "username");
                 var dbPassword = DotNetEnv.Env.GetString("DB_PASSWORD", "password");
-
                 var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUsername};Password={dbPassword}";
 
                 optionsBuilder.UseNpgsql(connectionString);

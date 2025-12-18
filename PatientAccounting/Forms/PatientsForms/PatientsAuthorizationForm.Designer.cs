@@ -108,6 +108,7 @@ namespace PatientsAccounting.Forms
             MainPanel.ShadowDecoration.CustomizableEdges = customizableEdges12;
             MainPanel.Size = new Size(722, 625);
             MainPanel.TabIndex = 1;
+            MainPanel.Paint += MainPanel_Paint;
             // 
             // backButton
             // 
@@ -119,7 +120,7 @@ namespace PatientsAccounting.Forms
             backButton.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             backButton.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             backButton.FillColor = Color.DimGray;
-            backButton.Font = new System.Drawing.Font("PT Sans", 10.999999F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            backButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.999999F, FontStyle.Bold, GraphicsUnit.Point, 204);
             backButton.ForeColor = Color.White;
             backButton.HoverState.FillColor = Color.FromArgb(0, 98, 163);
             backButton.Location = new Point(27, 24);
@@ -282,7 +283,7 @@ namespace PatientsAccounting.Forms
             // 
             passwordTimer.Interval = 5000;
             // 
-            // AuthorizationForm
+            // PatientsAuthorizationForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -290,7 +291,7 @@ namespace PatientsAccounting.Forms
             Controls.Add(MainPanel);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Margin = new Padding(2);
-            Name = "AuthorizationForm";
+            Name = "PatientsAuthorizationForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "HealthHub - Авторизация";
             MainPanel.ResumeLayout(false);

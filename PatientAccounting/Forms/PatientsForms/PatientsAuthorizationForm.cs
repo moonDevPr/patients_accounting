@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PatientsAccounting.Models;
 using PatientsAccounting.Services;
 using PatientsAcounting.Services;
@@ -61,12 +61,11 @@ namespace PatientsAccounting.Forms
                     var currentPatient = Patient.GetPatientByUsername(username);
                     var currentDoctor = Doctor.GetDoctorByUsername(username);
 
-                    // ВОТ ЗДЕСЬ НУЖНО ДОБАВИТЬ КОД ДЛЯ СОХРАНЕНИЯ ДАННЫХ ВРАЧА
                     if (currentDoctor != null)
                     {
                         var (doctor, credentials, role) = currentDoctor.Value;
 
-                        // ДОБАВЬТЕ ЭТИ СТРОКИ ДЛЯ СОХРАНЕНИЯ ДАННЫХ ВРАЧА:
+                        // Сохранение данных врача:
                         CurrentUser.DoctorId = doctor.id;
                         CurrentUser.DoctorFullName = $"{doctor.surname} {doctor.name} {doctor.patronymic}";
                         CurrentUser.RoleName = role.role_name;
@@ -111,7 +110,7 @@ namespace PatientsAccounting.Forms
                         {
                             CurrentUser.RoleName = employeeRole.role_name;
 
-                            // ДОБАВЛЕНО: Проверяем роль сотрудника и открываем соответствующую форму
+                            // Проверяем роль сотрудника и открываем соответствующую форму
                             if (employeeRole.role_name == "Аналитик")
                             {
                                 MessageBox.Show($"Добро пожаловать, аналитик {username}!");
@@ -188,6 +187,11 @@ namespace PatientsAccounting.Forms
                 var hash = sha256.ComputeHash(bytes);
                 return Convert.ToBase64String(hash);
             }
+        }
+
+        private void MainPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

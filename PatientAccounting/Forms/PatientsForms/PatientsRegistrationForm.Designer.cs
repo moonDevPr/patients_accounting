@@ -110,6 +110,7 @@ namespace PatientsAccounting.Forms
             MainPanel.ShadowDecoration.CustomizableEdges = customizableEdges20;
             MainPanel.Size = new Size(800, 869);
             MainPanel.TabIndex = 1;
+            MainPanel.Paint += MainPanel_Paint;
             // 
             // SnilsLabel
             // 
@@ -171,7 +172,7 @@ namespace PatientsAccounting.Forms
             backButton.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
             backButton.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
             backButton.FillColor = Color.DimGray;
-            backButton.Font = new Font("PT Sans", 10.999999F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            backButton.Font = new Font("Microsoft Sans Serif", 10.999999F, FontStyle.Bold, GraphicsUnit.Point, 204);
             backButton.ForeColor = Color.White;
             backButton.HoverState.FillColor = Color.FromArgb(0, 98, 163);
             backButton.Location = new Point(24, 30);

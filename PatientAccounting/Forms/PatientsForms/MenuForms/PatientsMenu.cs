@@ -84,7 +84,38 @@ namespace PatientsAccounting.Forms
 
         private void ProfileBtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Профиль пациента");
+            if (!CurrentUser.IsAuthenticated)
+            {
+                MessageBox.Show("Для просмотра профиля необходимо авторизоваться",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Проверяем PatientId
+            if (!CurrentUser.PatientId.HasValue || CurrentUser.PatientId.Value <= 0)
+            {
+                MessageBox.Show("ID пациента не найден. Возможно, вы не являетесь пациентом.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                // Передаем PatientId в конструктор
+                PatientProfileForm patientProfileForm = new PatientProfileForm(CurrentUser.PatientId.Value);
+
+                if (panelDesktop != null)
+                {
+                    patientProfileForm.Size = panelDesktop.Size;
+                }
+
+                OpenChildForm(patientProfileForm);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии профиля: {ex.Message}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void AuthBtn_Click(object sender, EventArgs e)
@@ -96,12 +127,21 @@ namespace PatientsAccounting.Forms
 
         private void CardBtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Медицинская карточка");
+            if (!CurrentUser.IsAuthenticated)
+            {
+                MessageBox.Show("Для просмотра карты необходимо авторизоваться");
+                return;
+            }
+            PatientCardForm patientCard = new PatientCardForm(CurrentUser.PatientId.Value);
+            if (panelDesktop != null)
+            {
+                patientCard.Size = panelDesktop.Size;
+            }
+            OpenChildForm(patientCard);
         }
 
         private void HistoryBtn_Click(object sender, EventArgs e)
         {
-            
             DoctorScheduleForm scheduleForm = new DoctorScheduleForm();
             OpenChildForm(scheduleForm);
         
