@@ -91,7 +91,8 @@ namespace PatientsAccounting.Forms
 
         private void MakeVisitBtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Записаться на прием");
+            AnalystRegistrationForm analystRegistrationForm = new AnalystRegistrationForm();
+            OpenChildForm(analystRegistrationForm);
         }
 
         private void HospitalsBtn_Click(object sender, EventArgs e)

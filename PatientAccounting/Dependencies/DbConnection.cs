@@ -16,7 +16,7 @@ namespace PatientsAccounting.Models
             {
                 var envPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".env");
                 DotNetEnv.Env.Load(envPath);
-
+                
                 var dbHost = DotNetEnv.Env.GetString("DB_HOST", "dbHost");
                 var dbPort = DotNetEnv.Env.GetString("DB_PORT", "port");
                 var dbName = DotNetEnv.Env.GetString("DB_NAME", "dbname");

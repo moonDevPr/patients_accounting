@@ -77,7 +77,7 @@ namespace PatientsAccounting.Forms
             leftMenuPanel.Location = new Point(0, 0);
             leftMenuPanel.Name = "leftMenuPanel";
             leftMenuPanel.ShadowDecoration.CustomizableEdges = customizableEdges14;
-            leftMenuPanel.Size = new Size(273, 833);
+            leftMenuPanel.Size = new Size(273, 913);
             leftMenuPanel.TabIndex = 0;
             // 
             // diseasesReportBtn
@@ -153,7 +153,7 @@ namespace PatientsAccounting.Forms
             logoutBtn.HoverState.FillColor = Color.FromArgb(232, 17, 35);
             logoutBtn.ImageAlign = HorizontalAlignment.Left;
             logoutBtn.ImageOffset = new Point(10, 0);
-            logoutBtn.Location = new Point(0, 783);
+            logoutBtn.Location = new Point(0, 863);
             logoutBtn.Name = "logoutBtn";
             logoutBtn.ShadowDecoration.CustomizableEdges = customizableEdges6;
             logoutBtn.Size = new Size(273, 50);
@@ -258,7 +258,7 @@ namespace PatientsAccounting.Forms
             contentPanel.Location = new Point(273, 0);
             contentPanel.Name = "contentPanel";
             contentPanel.ShadowDecoration.CustomizableEdges = customizableEdges18;
-            contentPanel.Size = new Size(1227, 833);
+            contentPanel.Size = new Size(1364, 913);
             contentPanel.TabIndex = 2;
             // 
             // AuthBtn
@@ -272,7 +272,7 @@ namespace PatientsAccounting.Forms
             AuthBtn.FillColor = Color.FromArgb(64, 64, 64);
             AuthBtn.Font = new Font("Segoe UI", 11F);
             AuthBtn.ForeColor = Color.White;
-            AuthBtn.Location = new Point(991, 21);
+            AuthBtn.Location = new Point(1128, 21);
             AuthBtn.Name = "AuthBtn";
             AuthBtn.ShadowDecoration.CustomizableEdges = customizableEdges16;
             AuthBtn.Size = new Size(214, 57);
@@ -288,14 +288,14 @@ namespace PatientsAccounting.Forms
             guna2HtmlLabel1.Location = new Point(28, 21);
             guna2HtmlLabel1.Margin = new Padding(2);
             guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            guna2HtmlLabel1.Size = new Size(104, 27);
+            guna2HtmlLabel1.Size = new Size(125, 31);
             guna2HtmlLabel1.TabIndex = 30;
             guna2HtmlLabel1.Text = "HealthHub";
             guna2HtmlLabel1.TextAlignment = ContentAlignment.MiddleCenter;
             // 
             // AnalystMenuForm
             // 
-            ClientSize = new Size(1500, 833);
+            ClientSize = new Size(1637, 913);
             Controls.Add(contentPanel);
             Controls.Add(leftMenuPanel);
             FormBorderStyle = FormBorderStyle.FixedSingle;

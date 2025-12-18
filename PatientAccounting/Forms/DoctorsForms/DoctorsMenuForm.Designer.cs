@@ -130,7 +130,7 @@ namespace PatientsAccounting.Forms
             MakeVisitBtn.ShadowDecoration.CustomizableEdges = customizableEdges4;
             MakeVisitBtn.Size = new Size(250, 85);
             MakeVisitBtn.TabIndex = 5;
-            MakeVisitBtn.Text = "Посещения";
+            MakeVisitBtn.Text = "Создание аналитика";
             MakeVisitBtn.TextAlign = HorizontalAlignment.Left;
             MakeVisitBtn.TextOffset = new Point(20, 0);
             MakeVisitBtn.Click += MakeVisitBtn_Click;

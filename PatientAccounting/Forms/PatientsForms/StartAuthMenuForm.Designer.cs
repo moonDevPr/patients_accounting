@@ -39,17 +39,17 @@ namespace PatientsAccounting.Forms
         {
             CustomizableEdges customizableEdges6 = new CustomizableEdges();
             CustomizableEdges customizableEdges7 = new CustomizableEdges();
+            CustomizableEdges customizableEdges1 = new CustomizableEdges();
+            CustomizableEdges customizableEdges2 = new CustomizableEdges();
             CustomizableEdges customizableEdges3 = new CustomizableEdges();
             CustomizableEdges customizableEdges4 = new CustomizableEdges();
             CustomizableEdges customizableEdges5 = new CustomizableEdges();
-            CustomizableEdges customizableEdges1 = new CustomizableEdges();
-            CustomizableEdges customizableEdges2 = new CustomizableEdges();
             MainPanel = new Guna.UI2.WinForms.Guna2Panel();
+            backButton = new Guna.UI2.WinForms.Guna2Button();
             subtitleLabel = new Label();
             LoginButton = new Guna.UI2.WinForms.Guna2Button();
             RegisterButton = new Guna.UI2.WinForms.Guna2Button();
             TitleLabel = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            backButton = new Guna.UI2.WinForms.Guna2Button();
             MainPanel.SuspendLayout();
             SuspendLayout();
             // 
@@ -69,6 +69,29 @@ namespace PatientsAccounting.Forms
             MainPanel.ShadowDecoration.CustomizableEdges = customizableEdges7;
             MainPanel.Size = new Size(769, 625);
             MainPanel.TabIndex = 1;
+            MainPanel.Paint += MainPanel_Paint;
+            // 
+            // backButton
+            // 
+            backButton.Animated = true;
+            backButton.BorderRadius = 10;
+            backButton.CustomizableEdges = customizableEdges1;
+            backButton.DisabledState.BorderColor = Color.DarkGray;
+            backButton.DisabledState.CustomBorderColor = Color.DarkGray;
+            backButton.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
+            backButton.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
+            backButton.FillColor = Color.DimGray;
+            backButton.Font = new Font("Microsoft Sans Serif", 10.999999F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            backButton.ForeColor = Color.White;
+            backButton.HoverState.FillColor = Color.FromArgb(0, 98, 163);
+            backButton.Location = new Point(28, 23);
+            backButton.Margin = new Padding(2);
+            backButton.Name = "backButton";
+            backButton.ShadowDecoration.CustomizableEdges = customizableEdges2;
+            backButton.Size = new Size(127, 53);
+            backButton.TabIndex = 21;
+            backButton.Text = "назад";
+            backButton.Click += backButton_Click;
             // 
             // subtitleLabel
             // 
@@ -139,28 +162,7 @@ namespace PatientsAccounting.Forms
             TitleLabel.TabIndex = 0;
             TitleLabel.Text = "HealthHub";
             TitleLabel.TextAlignment = ContentAlignment.MiddleCenter;
-            // 
-            // backButton
-            // 
-            backButton.Animated = true;
-            backButton.BorderRadius = 10;
-            backButton.CustomizableEdges = customizableEdges1;
-            backButton.DisabledState.BorderColor = Color.DarkGray;
-            backButton.DisabledState.CustomBorderColor = Color.DarkGray;
-            backButton.DisabledState.FillColor = Color.FromArgb(169, 169, 169);
-            backButton.DisabledState.ForeColor = Color.FromArgb(141, 141, 141);
-            backButton.FillColor = Color.DimGray;
-            backButton.Font = new Font("PT Sans", 10.999999F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            backButton.ForeColor = Color.White;
-            backButton.HoverState.FillColor = Color.FromArgb(0, 98, 163);
-            backButton.Location = new Point(28, 23);
-            backButton.Margin = new Padding(2);
-            backButton.Name = "backButton";
-            backButton.ShadowDecoration.CustomizableEdges = customizableEdges2;
-            backButton.Size = new Size(127, 53);
-            backButton.TabIndex = 21;
-            backButton.Text = "назад";
-            backButton.Click += backButton_Click;
+            TitleLabel.Click += TitleLabel_Click;
             // 
             // StartAuthMenuForm
             // 
