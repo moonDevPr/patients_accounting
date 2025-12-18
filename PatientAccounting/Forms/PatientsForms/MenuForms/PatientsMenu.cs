@@ -1,11 +1,12 @@
 ﻿using Guna.UI2.WinForms;
-using PatientsAccounting.Models;
+using PatientAccounting.Forms.PatientsForms.MenuForms;
 using PatientsAccounting.Forms;
+using PatientsAccounting.Models;
+using PatientsAccounting.Services;
 using PatientsAcounting.Services;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using PatientAccounting.Forms.PatientsForms.MenuForms;
 
 namespace PatientsAccounting.Forms
 {
@@ -38,9 +39,9 @@ namespace PatientsAccounting.Forms
             //childForm.BringToFront();
             //childForm.Show();
 
-            
+
             if (currentChildForm != null)
-            { 
+            {
                 currentChildForm.Close();
             }
 
@@ -73,7 +74,7 @@ namespace PatientsAccounting.Forms
 
             childForm.BringToFront();
             childForm.Show();
-        
+
         }
 
 
@@ -142,9 +143,16 @@ namespace PatientsAccounting.Forms
 
         private void HistoryBtn_Click(object sender, EventArgs e)
         {
+            // Исправляем: создаем форму расписания врачей
             DoctorScheduleForm scheduleForm = new DoctorScheduleForm();
+
+            // Устанавливаем размер под панель
+            if (panelDesktop != null)
+            {
+                scheduleForm.Size = panelDesktop.Size;
+            }
+
             OpenChildForm(scheduleForm);
-        
         }
 
         private void MakeVisitBtn_Click(Object sender, EventArgs e)
@@ -154,7 +162,7 @@ namespace PatientsAccounting.Forms
 
         private void HospitalsBtn_Click(Object sender, EventArgs e)
         {
-           
+
             // Создаем форму больниц
             HospitalsForm hospitalsForm = new HospitalsForm();
 
@@ -166,7 +174,71 @@ namespace PatientsAccounting.Forms
 
             // Открываем форму внутри panelDesktop
             OpenChildForm(hospitalsForm);
-        
+
+        }
+
+        private void btnSeedDatabase_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show(
+                "Внимание!\n\n" +
+                "Эта операция заполнит базу данных тестовыми данными.\n" +
+                "Все существующие данные будут удалены без возможности восстановления.\n\n" +
+                "Вы уверены, что хотите продолжить?",
+                "Заполнение базы данных тестовыми данными",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+
+            if (result == DialogResult.Yes)
+            {
+                // Отключаем кнопку на время выполнения
+                guna2Button1.Enabled = false;
+
+                try
+                {
+                    // Используем курсор ожидания
+                    this.Cursor = Cursors.WaitCursor;
+
+                    using (var context = new ApplicationDbContext())
+                    {
+                        var seeder = new DatabaseSeeder(context);
+                        seeder.SeedAllTables();
+                    }
+
+                    MessageBox.Show(
+                        "База данных успешно заполнена тестовыми данными!\n\n" +
+                        "Доступны следующие тестовые учетные записи:\n\n" +
+                        "ПАЦИЕНТЫ:\n" +
+                        "• Логин: patient1  Пароль: patient123\n" +
+                        "• Логин: patient2  Пароль: patient456\n" +
+                        "• Логин: patient3  Пароль: patient789\n\n" +
+                        "ВРАЧИ:\n" +
+                        "• Логин: doctor1   Пароль: doctor123\n" +
+                        "• Логин: doctor2   Пароль: doctor456\n" +
+                        "• Логин: doctor3   Пароль: doctor789\n\n" +
+                        "АНАЛИТИК:\n" +
+                        "• Логин: analyst1  Пароль: analyst123\n\n" +
+                        "Для входа используйте кнопку 'Войти' в соответствующей форме.",
+                        "База данных заполнена",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"Ошибка при заполнении базы данных:\n\n{ex.Message}\n\n" +
+                        "Проверьте подключение к базе данных и повторите попытку.",
+                        "Ошибка выполнения операции",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    // Восстанавливаем интерфейс
+                    this.Cursor = Cursors.Default;
+                    guna2Button1.Enabled = true;
+                }
+            }
         }
 
         private void LogoutBtn_Click(object sender, EventArgs e)
@@ -193,6 +265,9 @@ namespace PatientsAccounting.Forms
             this.WindowState = FormWindowState.Minimized;
         }
 
-        
+        private void PatientsMenu_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

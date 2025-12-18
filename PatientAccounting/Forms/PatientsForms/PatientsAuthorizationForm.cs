@@ -51,13 +51,7 @@ namespace PatientsAccounting.Forms
                 var authUser = CheckUserCredentials(username, password);
                 if (authUser != null)
                 {
-                    CurrentUser.UserId = authUser.id;
-                    CurrentUser.Username = authUser.username;
-                    if (authUser.id_users_role.HasValue)
-                    {
-                        CurrentUser.RoleId = authUser.id_users_role.Value;
-                    }
-
+                    // Получаем роль
                     string? roleName = null;
                     using (var context = new ApplicationDbContext())
                     {
@@ -69,37 +63,68 @@ namespace PatientsAccounting.Forms
                                 .FirstOrDefault();
                         }
                     }
-                    CurrentUser.RoleName = roleName;
 
-                    var currentPatient = Patient.GetPatientByUsername(username);
-                    if (currentPatient != null)
-                    {
-                        // Это пациент
-                        var (patient, credentials, role) = currentPatient.Value;
-                        CurrentUser.PatientId = patient.id;
-
-                        MessageBox.Show($"Добро пожаловать, {patient.surname} {patient.name} {patient.patronymic}!");
-
-                        PatientsMenu menu = new PatientsMenu();
-                        menu.Show();
-                        this.Hide();
-                        return;
-                    }
-
+                    // Обработка в зависимости от роли
                     if (!string.IsNullOrEmpty(roleName))
                     {
                         switch (roleName)
                         {
+                            case "Пациент":
+                                var currentPatient = Patient.GetPatientByUsername(username);
+                                if (currentPatient != null)
+                                {
+                                    var (patient, credentials, role) = currentPatient.Value;
+
+                                    CurrentUser.SetUserData(
+                                        credentials.id,
+                                        credentials.username,
+                                        role.id,
+                                        role.role_name
+                                    );
+
+                                    CurrentUser.SetPatientData(patient.id);
+
+                                    MessageBox.Show($"Добро пожаловать, {patient.surname} {patient.name} {patient.patronymic}!");
+
+                                    PatientsMenu menu = new PatientsMenu();
+                                    menu.Show();
+                                    this.Hide();
+                                }
+                                break;
+
                             case "Врач":
                                 var currentDoctor = Doctor.GetDoctorByUsername(username);
                                 if (currentDoctor != null)
                                 {
                                     var (doctor, credentials, role) = currentDoctor.Value;
-                                    MessageBox.Show($"Добро пожаловать, {doctor.surname} {doctor.name} {doctor.patronymic}!");
+
+                                    CurrentUser.SetUserData(
+                                        credentials.id,
+                                        credentials.username,
+                                        role.id,
+                                        role.role_name
+                                    );
+
+                                    CurrentUser.SetDoctorData(
+                                        doctor.id,
+                                        $"{doctor.surname} {doctor.name} {doctor.patronymic}"
+                                    );
+
+                                    MessageBox.Show($"Добро пожаловать, {CurrentUser.DoctorFullName}!",
+                                        "Успешный вход", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 }
                                 else
                                 {
-                                    MessageBox.Show($"Добро пожаловать, врач {username}!");
+                                    // Устанавливаем базовые данные
+                                    CurrentUser.SetUserData(
+                                        authUser.id,
+                                        authUser.username,
+                                        authUser.id_users_role ?? 0,
+                                        roleName
+                                    );
+
+                                    // Пытаемся найти врача
+                                    FindDoctorByUserId(authUser.id);
                                 }
 
                                 DoctorsMenuForm form = new DoctorsMenuForm();
@@ -108,6 +133,13 @@ namespace PatientsAccounting.Forms
                                 break;
 
                             case "Аналитик":
+                                CurrentUser.SetUserData(
+                                    authUser.id,
+                                    authUser.username,
+                                    authUser.id_users_role ?? 0,
+                                    roleName
+                                );
+
                                 MessageBox.Show($"Добро пожаловать, аналитик {username}!");
                                 AnalystMenuForm analystMenu = new AnalystMenuForm();
                                 analystMenu.Show();
@@ -133,6 +165,36 @@ namespace PatientsAccounting.Forms
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка авторизации: {ex.Message}");
+            }
+        }
+
+        private void FindDoctorByUserId(int userId)
+        {
+            try
+            {
+                using (var context = new ApplicationDbContext())
+                {
+                    var doctor = context.Doctors
+                        .FirstOrDefault(d => d.id_user_credential == userId);
+
+                    if (doctor != null)
+                    {
+                        CurrentUser.SetDoctorData(
+                            doctor.id,
+                            $"{doctor.surname} {doctor.name} {doctor.patronymic}"
+                        );
+
+                        Console.WriteLine($"Найден врач: ID={doctor.id}, Name={doctor.surname} {doctor.name}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Врач не найден для UserId={userId}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка поиска врача: {ex.Message}");
             }
         }
         private static UsersCredentials? CheckUserCredentials(string username, string password)

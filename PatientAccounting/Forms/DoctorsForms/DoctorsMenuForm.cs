@@ -141,9 +141,30 @@ namespace PatientsAccounting.Forms
 
         private void MakeVisitBtn_Click(object sender, EventArgs e)
         {
-            AnalystRegistrationForm analystRegistrationForm = new AnalystRegistrationForm();
-            OpenChildForm(analystRegistrationForm);
+            
+            try
+            {
+                // Проверяем авторизацию врача
+                if (!CurrentUser.IsAuthenticated || !CurrentUser.DoctorId.HasValue || CurrentUser.DoctorId <= 0)
+                {
+                    MessageBox.Show("Врач не авторизован",
+                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Открываем форму Appointment с передачей ID врача
+                Appointment appointmentForm = new Appointment(CurrentUser.DoctorId.Value);
+
+                // Открываем форму в panelDesktop
+                OpenChildForm(appointmentForm);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при открытии формы моих приемов: {ex.Message}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+        
 
         private void HospitalsBtn_Click(object sender, EventArgs e)
         {
